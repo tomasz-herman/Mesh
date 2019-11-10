@@ -26,7 +26,6 @@ public class Layout {
     private JSlider ks_slider;
     private JSlider m_slider;
     private JPanel main;
-    private JScrollPane scroll;
     private JButton light_color;
     private JRadioButton point;
     private JRadioButton directional;
@@ -255,19 +254,33 @@ public class Layout {
     public void start(){
         new MouseAdapter(canvas);
         int frames = 0;
-        long time = System.nanoTime();
+        int updates = 0;
+        long time = 0;
+        long dt = 1_000_000_000 / 60;
+        long currentTime = System.nanoTime();
         while(true){
-            update();
+            long newTime = System.nanoTime();
+            long frameTime = newTime - currentTime;
+            currentTime = newTime;
+            while ( frameTime > 0 )
+            {
+                long deltaTime = Math.min(frameTime, dt);
+                update(deltaTime / 1e9f);
+                frameTime -= deltaTime;
+                time += deltaTime;
+                updates++;
+            }
             try {
                 SwingUtilities.invokeAndWait(this::render);
             } catch (InterruptedException | InvocationTargetException e) {
                 e.printStackTrace();
             }
             frames++;
-            if(System.nanoTime() - time > 1e9){
-                displayFPS.accept(frames + " fps");
-                time = System.nanoTime();
+            if(time > 1e9){
+                displayFPS.accept(frames + " fps, " + updates + " ups");
+                time = 0;
                 frames = 0;
+                updates = 0;
             }
         }
     }
@@ -276,9 +289,9 @@ public class Layout {
         renderer.renderScene(scene);
     }
 
-    private void update(){
+    private void update(float delta){
         if(pointLight){
-            lightPos.rotateY(0.01f);
+            lightPos.rotateY(delta);
             lightPos.add(Main.CANVAS_WIDTH>>1, 0, Main.CANVAS_HEIGHT>>1);
             scene.getLight().setPosition(lightPos.x, lightPos.y, lightPos.z);
             lightPos.add(-(Main.CANVAS_WIDTH>>1), 0, -Main.CANVAS_HEIGHT>>1);

@@ -10,30 +10,16 @@ public class Window extends JFrame {
         this.title = title;
         layout = new Layout();
         setBackground(Color.BLACK);
+        setForeground(Color.BLACK);
         setContentPane(layout.getMain());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle(title);
         setSize(new Dimension(width, height));
         setMinimumSize(new Dimension(640, 480));
         setResizable(false);
-        try{
-            Thread.sleep(1000);
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         setLocationRelativeTo(null);
         pack();
-        try {
-            layout.initializeTerxtureCanvases();
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-        e.printStackTrace();
-        }
+        layout.initializeTerxtureCanvases();
         pack();
         setVisible(true);
         layout.setDisplayFPS(this::setText);

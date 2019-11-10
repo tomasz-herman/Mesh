@@ -69,7 +69,7 @@ public class Renderer {
 
     public void renderTriangleFast(Triangle t, Texture texture, Texture normals, Light light, int thread){
         Arrays.fill(edgeTable[thread], null);
-        List<Edge> activeEdges = new ArrayList<>();
+        List<Edge> activeEdges = new LinkedList<>();
         int yMin = Math.min(t.a.screen.y, t.b.screen.y);
         if(t.a.screen.y != t.b.screen.y) {
             edgeTable[thread][yMin] = new Edge(t.a.screen, t.b.screen, edgeTable[thread][yMin]);
@@ -103,9 +103,8 @@ public class Renderer {
                 }
                 j++;
             }
-            List<Edge> survivors = new ArrayList<>(activeEdges.size());
-            for (Edge edge : activeEdges) if (edge.yMax - 1 != i) survivors.add(edge);
-            activeEdges = survivors;
+            int finalI = i;
+            activeEdges.removeIf(edge -> edge.yMax - 1 == finalI);
             for (Edge edge : activeEdges) edge.xMin += edge.dx_dy;
         }
     }
@@ -123,7 +122,7 @@ public class Renderer {
 
     public void renderTriangleHybrid(Triangle t, Texture texture, Texture normals, Light light, int thread){
         Arrays.fill(edgeTable[thread], null);
-        List<Edge> activeEdges = new ArrayList<>();
+        List<Edge> activeEdges = new LinkedList<>();
         int yMin = Math.min(t.a.screen.y, t.b.screen.y);
         if(t.a.screen.y != t.b.screen.y) {
             edgeTable[thread][yMin] = new Edge(t.a.screen, t.b.screen, edgeTable[thread][yMin]);
@@ -164,9 +163,8 @@ public class Renderer {
                 }
                 j++;
             }
-            List<Edge> survivors = new ArrayList<>(activeEdges.size());
-            for (Edge edge : activeEdges) if (edge.yMax - 1 != i) survivors.add(edge);
-            activeEdges = survivors;
+            int finalI = i;
+            activeEdges.removeIf(edge -> edge.yMax - 1 == finalI);
             for (Edge edge : activeEdges) edge.xMin += edge.dx_dy;
         }
     }
@@ -199,7 +197,7 @@ public class Renderer {
 
     public void renderTriangle(Triangle t, Texture texture, Texture normals, Light light, int thread){
         Arrays.fill(edgeTable[thread], null);
-        List<Edge> activeEdges = new ArrayList<>();
+        List<Edge> activeEdges = new LinkedList<>();
         int yMin = Math.min(t.a.screen.y, t.b.screen.y);
         if(t.a.screen.y != t.b.screen.y) {
             edgeTable[thread][yMin] = new Edge(t.a.screen, t.b.screen, edgeTable[thread][yMin]);
@@ -226,13 +224,11 @@ public class Renderer {
                 int to = (int)activeEdges.get(2 * j + 1).xMin;
                 for (int k = from; k < to; k++) {
                     canvas.setPixel(k, i, shade(t, k, i, texture, normals, light));
-                    //canvas.setPixel(k, i, texture.getSampleNearestNeighbor((float)k/ canvas.getWidth(), (float)i / canvas.getHeight()));
                 }
                 j++;
             }
-            List<Edge> survivors = new ArrayList<>(activeEdges.size());
-            for (Edge edge : activeEdges) if (edge.yMax - 1 != i) survivors.add(edge);
-            activeEdges = survivors;
+            int finalI = i;
+            activeEdges.removeIf(edge -> edge.yMax - 1 == finalI);
             for (Edge edge : activeEdges) edge.xMin += edge.dx_dy;
         }
     }
