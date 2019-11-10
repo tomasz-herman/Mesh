@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="org.joml:joml:1.9.19" type="repository">
+    <properties maven-id="org.joml:joml:1.9.19" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/joml-1.9.19.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/joml-1.9.19-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/joml-1.9.19-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
