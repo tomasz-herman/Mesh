@@ -278,10 +278,14 @@ public class Layout {
                     xMesh = Integer.parseInt(mesh_x.getText());
                     Mesh old = scene.getMesh();
                     Mesh mesh = MeshGenerator.grid(xMesh, yMesh, old.getTexture(), old.getNormals());
-                    mesh.setDiffuse(old.diffuse);
-                    mesh.setAmbient(old.ambient);
-                    mesh.setSpecular(old.specular);
-                    mesh.setSpecularExponent(old.specularExponent);
+                    if(random.isSelected()){
+                        mesh.randomize();
+                    } else {
+                        mesh.setDiffuse(old.diffuse);
+                        mesh.setAmbient(old.ambient);
+                        mesh.setSpecular(old.specular);
+                        mesh.setSpecularExponent(old.specularExponent);
+                    }
                     scene.setMesh(mesh);
                 }
             }
@@ -308,10 +312,14 @@ public class Layout {
                     yMesh = Integer.parseInt(mesh_y.getText());
                     Mesh old = scene.getMesh();
                     Mesh mesh = MeshGenerator.grid(xMesh, yMesh, old.getTexture(), old.getNormals());
-                    mesh.setDiffuse(old.diffuse);
-                    mesh.setAmbient(old.ambient);
-                    mesh.setSpecular(old.specular);
-                    mesh.setSpecularExponent(old.specularExponent);
+                    if(random.isSelected()){
+                        mesh.randomize();
+                    } else {
+                        mesh.setDiffuse(old.diffuse);
+                        mesh.setAmbient(old.ambient);
+                        mesh.setSpecular(old.specular);
+                        mesh.setSpecularExponent(old.specularExponent);
+                    }
                     scene.setMesh(mesh);
                 }
             }
