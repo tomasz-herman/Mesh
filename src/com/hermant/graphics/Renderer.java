@@ -89,14 +89,10 @@ public class Renderer {
                 e = e.next;
             }
             activeEdges.sort(Comparator.comparingDouble(edge -> edge.xMin));
-            for (int j = 0; j < activeEdges.size() >> 1; j++) {
-                int from = (int)activeEdges.get(2 * j).xMin;
-                int to = (int)activeEdges.get(2 * j + 1).xMin;
-                for (int k = from; k < to; k++) {
-                    canvas.setPixel(k, i, shadeFast(t, k, i, a, b, c));
-                    //canvas.setPixel(k, i, texture.getSampleNearestNeighbor((float)k/ canvas.getWidth(), (float)i / canvas.getHeight()));
-                }
-                j++;
+            for (int j = 0; j < activeEdges.size(); j+=2) {
+                int from = (int)activeEdges.get(j).xMin;
+                int to = (int)activeEdges.get(j + 1).xMin;
+                for (int k = from; k < to; k++) canvas.setPixel(k, i, shadeFast(t, k, i, a, b, c));
             }
             int finalI = i;
             activeEdges.removeIf(edge -> edge.yMax - 1 == finalI);
@@ -149,14 +145,11 @@ public class Renderer {
                 e = e.next;
             }
             activeEdges.sort(Comparator.comparingDouble(edge -> edge.xMin));
-            for (int j = 0; j < activeEdges.size() >> 1; j++) {
-                int from = (int)activeEdges.get(2 * j).xMin;
-                int to = (int)activeEdges.get(2 * j + 1).xMin;
-                for (int k = from; k < to; k++) {
+            for (int j = 0; j < activeEdges.size(); j+=2) {
+                int from = (int)activeEdges.get(j).xMin;
+                int to = (int)activeEdges.get(j + 1).xMin;
+                for (int k = from; k < to; k++)
                     canvas.setPixel(k, i, shadeHybrid(t, k, i, texA, texB, texC, normA, normB, normC, light));
-                    //canvas.setPixel(k, i, texture.getSampleNearestNeighbor((float)k/ canvas.getWidth(), (float)i / canvas.getHeight()));
-                }
-                j++;
             }
             int finalI = i;
             activeEdges.removeIf(edge -> edge.yMax - 1 == finalI);
@@ -214,13 +207,10 @@ public class Renderer {
                 e = e.next;
             }
             activeEdges.sort(Comparator.comparingDouble(edge -> edge.xMin));
-            for (int j = 0; j < activeEdges.size() >> 1; j++) {
-                int from = (int)activeEdges.get(2 * j).xMin;
-                int to = (int)activeEdges.get(2 * j + 1).xMin;
-                for (int k = from; k < to; k++) {
-                    canvas.setPixel(k, i, shade(t, k, i, texture, normals, light));
-                }
-                j++;
+            for (int j = 0; j < activeEdges.size(); j+=2) {
+                int from = (int)activeEdges.get(j).xMin;
+                int to = (int)activeEdges.get(j + 1).xMin;
+                for (int k = from; k < to; k++) canvas.setPixel(k, i, shade(t, k, i, texture, normals, light));
             }
             int finalI = i;
             activeEdges.removeIf(edge -> edge.yMax - 1 == finalI);
