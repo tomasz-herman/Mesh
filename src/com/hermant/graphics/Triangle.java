@@ -5,7 +5,7 @@ public class Triangle {
     public float ambient;
     public float diffuse;
     public float specular;
-    public float specularExponent;
+    public int specularExponent;
 
     public Triangle(Vertex a, Vertex b, Vertex c) {
         this.a = a;

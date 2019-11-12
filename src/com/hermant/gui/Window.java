@@ -22,7 +22,10 @@ public class Window extends JFrame {
         layout.initializeTerxtureCanvases();
         pack();
         setVisible(true);
+        getContentPane().setBackground(Color.BLACK);
         layout.setDisplayFPS(this::setText);
+        pack();
+        revalidate();
     }
 
     public void setText(String text){

@@ -16,7 +16,7 @@ public class Mesh {
     public float ambient;
     public float diffuse;
     public float specular;
-    public float specularExponent;
+    public int specularExponent;
 
     public List<Vertex> getVertices() {
         return vertices;
@@ -64,7 +64,7 @@ public class Mesh {
         for (Triangle triangle : triangles) triangle.specular = specular;
     }
 
-    public void setSpecularExponent(float specularExponent) {
+    public void setSpecularExponent(int specularExponent) {
         this.specularExponent = specularExponent;
         for (Triangle triangle : triangles) triangle.specularExponent = specularExponent;
 

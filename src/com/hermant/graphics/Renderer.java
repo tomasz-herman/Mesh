@@ -3,7 +3,6 @@ package com.hermant.graphics;
 import org.joml.Interpolationf;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
-import org.w3c.dom.Text;
 
 import java.util.*;
 import java.util.List;
@@ -53,11 +52,7 @@ public class Renderer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (Triangle triangle : mesh.getTriangles()) {
-            canvas.setPixel(triangle.a.screen.x, triangle.a.screen.y, 0xffff0000);
-            canvas.setPixel(triangle.b.screen.x, triangle.b.screen.y, 0xffff0000);
-            canvas.setPixel(triangle.c.screen.x, triangle.c.screen.y, 0xffff0000);
-        }
+        for (Vertex vertex : mesh.getVertices()) canvas.setPixel(vertex.screen.x, vertex.screen.y, 0xffff0000);
 
         canvas.repaint();
     }
@@ -187,10 +182,10 @@ public class Renderer {
                 factors.x * normA.y + factors.y * normB.y + factors.z * normC.y,
                 factors.x * normA.z + factors.y * normB.z + factors.z * normC.z
         );
-        double cos = toLight.reflect(norm, new Vector3f()).dot(0, -1, 0);
+        float cos = toLight.reflect(norm, new Vector3f()).dot(0, -1, 0);
         Color3f specular = cos < 1e-6 ?
                 new Color3f(0) :
-                Color3f.mul(objectColor, t.specular).mul((float) Math.pow(cos, t.specularExponent));
+                Color3f.mul(objectColor, t.specular).mul(pow(cos, t.specularExponent));
         Color3f diffuse = objectColor.mul(toLight.dot(norm)).mul(t.diffuse);
         return diffuse.add(ambient).add(specular).clamp();
     }
@@ -241,12 +236,22 @@ public class Renderer {
                 new Vector3f(light.getPosition().x, light.getPosition().y, light.getPosition().z).normalize();
         Color3f normal = new Color3f(normals.get(xPos, yPos));
         Vector3f norm = new Vector3f(normal.red * 2 - 1, normal.blue, -normal.green * 2 + 1).normalize();
-        double cos = toLight.reflect(norm, new Vector3f()).dot(0, -1, 0);
+        float cos = toLight.reflect(norm, new Vector3f()).dot(0, -1, 0);
         Color3f specular = cos < 1e-6 ?
                 new Color3f(0) :
-                Color3f.mul(objectColor, t.specular).mul((float) Math.pow(cos, t.specularExponent));
+                Color3f.mul(objectColor, t.specular).mul(pow(cos, t.specularExponent));
         Color3f diffuse = objectColor.mul(toLight.dot(norm)).mul(t.diffuse);
         return diffuse.add(ambient).add(specular).clamp();
+    }
+
+    private static float pow(float a, int b){
+        float result = 1.0f;
+        while(b > 0){
+            if((b & 1) == 1) result *= a;
+            b = b >> 1;
+            a *= a;
+        }
+        return result;
     }
 
     private Edge[][] edgeTable;

@@ -3,12 +3,14 @@
   <grid id="27dc6" binding="main" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="788" height="659"/>
+      <xy x="20" y="20" width="788" height="852"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-16777216"/>
+    </properties>
     <border type="none"/>
     <children>
-      <grid id="dae3d" layout-manager="GridLayoutManager" row-count="7" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="dae3d" layout-manager="GridLayoutManager" row-count="8" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -16,10 +18,10 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="2ad51" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="2ad51" binding="texture_pane" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none" title="kolor obiektu"/>
@@ -45,6 +47,8 @@
                 <constraints>
                   <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <minimum-size width="1" height="1"/>
+                    <preferred-size width="64" height="64"/>
+                    <maximum-size width="64" height="64"/>
                   </grid>
                 </constraints>
                 <properties/>
@@ -55,7 +59,7 @@
           </grid>
           <vspacer id="a569a">
             <constraints>
-              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
           </vspacer>
           <grid id="8dee0" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -85,8 +89,10 @@
               <grid id="5dfe6" binding="normals_panel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                  <grid row="0" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <minimum-size width="1" height="1"/>
+                    <preferred-size width="64" height="64"/>
+                    <maximum-size width="64" height="64"/>
                   </grid>
                 </constraints>
                 <properties/>
@@ -236,7 +242,10 @@
               <grid id="16032" binding="light_color_panel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="64" height="64"/>
+                    <maximum-size width="64" height="64"/>
+                  </grid>
                 </constraints>
                 <properties/>
                 <border type="none"/>
@@ -266,6 +275,56 @@
                 </constraints>
                 <properties>
                   <text value="kierunkowe"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="2a51b" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none" title="siatka"/>
+            <children>
+              <component id="4264b" class="javax.swing.JTextField" binding="mesh_x">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                    <preferred-size width="80" height="-1"/>
+                    <maximum-size width="80" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <horizontalAlignment value="11"/>
+                  <text value="20"/>
+                </properties>
+              </component>
+              <component id="2840e" class="javax.swing.JTextField" binding="mesh_y">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                    <preferred-size width="80" height="-1"/>
+                    <maximum-size width="80" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <horizontalAlignment value="11"/>
+                  <text value="20"/>
+                </properties>
+              </component>
+              <component id="2df85" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="4" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="X od 1 do 999"/>
+                </properties>
+              </component>
+              <component id="a6fdf" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Y od 1 do 999"/>
                 </properties>
               </component>
             </children>

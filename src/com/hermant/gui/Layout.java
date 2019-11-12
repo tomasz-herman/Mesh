@@ -6,6 +6,8 @@ import com.hermant.graphics.Canvas;
 import org.joml.Vector3f;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.*;
@@ -36,6 +38,9 @@ public class Layout {
     private JPanel texture_panel;
     private JPanel normals_panel;
     private JPanel canvas_panel;
+    private JTextField mesh_x;
+    private JTextField mesh_y;
+    private JPanel texture_pane;
 
     private static final int GRAB_TOLERANCE = 8;
 
@@ -48,7 +53,11 @@ public class Layout {
     private Canvas texture_canvas, normals_canvas;
     private Consumer<String> displayFPS = System.out::println;
 
-    private float ka = 0.3f, ks = 1.0f, kd = 0.7f, m = 30.0f;
+    private float ka = 0.3f, ks = 1.0f, kd = 0.7f;
+    private int m = 30;
+
+    private int xMesh = 20;
+    private int yMesh = 20;
 
     public Layout() {
         fileChooser.setFileFilter(new FileFilter() {
@@ -104,7 +113,7 @@ public class Layout {
         m_slider.setMinimum(1);
         m_slider.setValue(30);
         m_slider.addChangeListener(e -> {
-            m = (float)m_slider.getValue();
+            m = m_slider.getValue();
             if(scene != null) scene.getMesh().setSpecularExponent(m);
         });
 
@@ -130,12 +139,33 @@ public class Layout {
         });
 
         light_color_panel.setBackground(Color.WHITE);
-        light_color.addActionListener(e -> {
-            Color color = JColorChooser.showDialog(null, "Choose a color", Color.WHITE);
-            if(color == null) color = Color.WHITE;
-            light_color_panel.setBackground(color);
-            scene.getLight().setColor((0.5f + color.getRed()) / 255f, (0.5f + color.getGreen())/ 255f, (0.5f + color.getBlue())/ 255f);
+        light_color_panel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setLightColor(null);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                setLightColor(null);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
         });
+        light_color.addActionListener(this::setLightColor);
 
         point.addActionListener(e -> {
             if(scene != null) scene.getLight().setPointLight(pointLight = true);
@@ -169,40 +199,120 @@ public class Layout {
             normals_canvas.repaint();
         });
 
-        color_texture.addActionListener(e -> {
-            int returnVal = fileChooser.showOpenDialog(null);
-            if(returnVal == JFileChooser.APPROVE_OPTION){
-                File file = fileChooser.getSelectedFile();
-                try {
-                    Texture texture = new Texture(file.getPath()).rescale(Main.CANVAS_WIDTH, Main.CANVAS_HEIGHT);
-                    for (int i = 0; i < texture_canvas.getWidth(); i++) {
-                        for (int j = 0; j < texture_canvas.getHeight(); j++) {
-                            texture_canvas.setPixel(i, j, texture.getSampleNearestNeighbor((i + 0.5f)/ texture_canvas.getWidth(), (j + 0.5f)/ texture_canvas.getWidth()));
-                        }
-                    }
-                    texture_canvas.repaint();
-                    scene.getMesh().setTexture(texture);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+        color_texture.addActionListener(this::chooseTexture);
+
+        normals_texture.addActionListener(this::chooseNormalsTexture);
+
+        texture_panel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                chooseTexture(null);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                chooseTexture(null);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        normals_panel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                chooseNormalsTexture(null);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                chooseNormalsTexture(null);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        mesh_x.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                change();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                change();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                change();
+            }
+
+            private void change(){
+                if(mesh_x.getText().matches("[1-9]\\d{0,2}")){
+                    xMesh = Integer.parseInt(mesh_x.getText());
+                    Mesh old = scene.getMesh();
+                    Mesh mesh = MeshGenerator.grid(xMesh, yMesh, old.getTexture(), old.getNormals());
+                    mesh.setDiffuse(old.diffuse);
+                    mesh.setAmbient(old.ambient);
+                    mesh.setSpecular(old.specular);
+                    mesh.setSpecularExponent(old.specularExponent);
+                    scene.setMesh(mesh);
                 }
             }
         });
 
-        normals_texture.addActionListener(e -> {
-            int returnVal = fileChooser.showOpenDialog(null);
-            if(returnVal == JFileChooser.APPROVE_OPTION){
-                File file = fileChooser.getSelectedFile();
-                try {
-                    Texture texture = new Texture(file.getPath()).rescale(Main.CANVAS_WIDTH, Main.CANVAS_HEIGHT);
-                    for (int i = 0; i < normals_canvas.getWidth(); i++) {
-                        for (int j = 0; j < normals_canvas.getHeight(); j++) {
-                            normals_canvas.setPixel(i, j, texture.getSampleNearestNeighbor((i + 0.5f)/ normals_canvas.getWidth(), (j + 0.5f)/ normals_canvas.getWidth()));
-                        }
-                    }
-                    normals_canvas.repaint();
-                    scene.getMesh().setNormals(texture);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+        mesh_y.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                change();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                change();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                change();
+            }
+
+            private void change(){
+                if(mesh_y.getText().matches("[1-9]\\d{0,2}")){
+                    yMesh = Integer.parseInt(mesh_y.getText());
+                    Mesh old = scene.getMesh();
+                    Mesh mesh = MeshGenerator.grid(xMesh, yMesh, old.getTexture(), old.getNormals());
+                    mesh.setDiffuse(old.diffuse);
+                    mesh.setAmbient(old.ambient);
+                    mesh.setSpecular(old.specular);
+                    mesh.setSpecularExponent(old.specularExponent);
+                    scene.setMesh(mesh);
                 }
             }
         });
@@ -245,11 +355,17 @@ public class Layout {
     }
 
     public void initializeTerxtureCanvases(){
-        texture_panel.setLayout(new FlowLayout());
-        normals_panel.setLayout(new FlowLayout());
-        texture_panel.add(texture_canvas = new Canvas(texture_panel.getWidth(), texture_panel.getHeight()));
+        texture_panel.setLayout(new GridLayout());
+        normals_panel.setLayout(new GridLayout());
+        texture_panel.setBackground(Color.green);
+        normals_panel.setBackground(Color.green);
+        texture_panel.revalidate();
+        normals_panel.revalidate();
+        texture_pane.revalidate();
         normals_panel.add(normals_canvas = new Canvas(normals_panel.getWidth(), normals_panel.getHeight()));
+        texture_panel.add(texture_canvas = new Canvas(texture_panel.getWidth(), texture_panel.getHeight()));
     }
+
 
     public void start(){
         new MouseAdapter(canvas);
@@ -302,6 +418,51 @@ public class Layout {
 
     public JPanel getMain() {
         return main;
+    }
+
+    private void chooseNormalsTexture(ActionEvent e) {
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                Texture texture = new Texture(file.getPath()).rescale(Main.CANVAS_WIDTH, Main.CANVAS_HEIGHT);
+                for (int i = 0; i < normals_canvas.getWidth(); i++) {
+                    for (int j = 0; j < normals_canvas.getHeight(); j++) {
+                        normals_canvas.setPixel(i, j, texture.getSampleNearestNeighbor((i + 0.5f) / normals_canvas.getWidth(), (j + 0.5f) / normals_canvas.getWidth()));
+                    }
+                }
+                normals_canvas.repaint();
+                scene.getMesh().setNormals(texture);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void chooseTexture(ActionEvent e) {
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                Texture texture = new Texture(file.getPath()).rescale(Main.CANVAS_WIDTH, Main.CANVAS_HEIGHT);
+                for (int i = 0; i < texture_canvas.getWidth(); i++) {
+                    for (int j = 0; j < texture_canvas.getHeight(); j++) {
+                        texture_canvas.setPixel(i, j, texture.getSampleNearestNeighbor((i + 0.5f) / texture_canvas.getWidth(), (j + 0.5f) / texture_canvas.getWidth()));
+                    }
+                }
+                texture_canvas.repaint();
+                scene.getMesh().setTexture(texture);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void setLightColor(ActionEvent e) {
+        Color color = JColorChooser.showDialog(null, "Choose a color", Color.WHITE);
+        if (color == null) color = Color.WHITE;
+        light_color_panel.setBackground(color);
+        scene.getLight().setColor((0.5f + color.getRed()) / 255f, (0.5f + color.getGreen()) / 255f, (0.5f + color.getBlue()) / 255f);
     }
 
     private class MouseAdapter implements MouseListener, MouseMotionListener, MouseWheelListener {
