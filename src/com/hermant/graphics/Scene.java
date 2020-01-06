@@ -2,15 +2,24 @@ package com.hermant.graphics;
 
 public class Scene {
 
-    private Mesh mesh;
+    private GameObject object;
     private Light light;
+    private Camera camera;
 
-    public void setMesh(Mesh mesh) {
-        this.mesh = mesh;
+    public Camera getCamera() {
+        return camera;
     }
 
-    public Mesh getMesh() {
-        return mesh;
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+
+    public void setGameObject(GameObject object) {
+        this.object = object;
+    }
+
+    public GameObject getGameObject() {
+        return object;
     }
 
     public Light getLight() {

@@ -72,4 +72,49 @@ public class MeshGenerator {
         }
         return new Mesh(texture, normals, triangles, vertexList);
     }
+
+
+    public static Mesh cube(){
+        Vertex[][][] vertices = new Vertex[2][2][2];
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 2; k++) {
+                    int x = i == 0 ? -1 : 1;
+                    int y = j == 0 ? -1 : 1;
+                    int z = k == 0 ? -1 : 1;
+                    Vertex v = new Vertex();
+                    v.position = new Vector3f(x, y, z);
+                    v.normal = new Vector3f(0, 0, 0);
+                    v.texture = new Vector2f(0, 0);
+                    v.binormal = new Vector3f(0, 0, 0);
+                    v.tangent = new Vector3f(0, 0, 0);
+                    v.screen = new Vector2i(0, 0);
+                    vertices[i][j][k] = v;
+                }
+            }
+        }
+        List<Triangle> triangles = new ArrayList<>();
+        triangles.add(new Triangle(vertices[0][0][0], vertices[0][1][0], vertices[0][0][1]));
+        triangles.add(new Triangle(vertices[0][1][1], vertices[0][1][0], vertices[0][0][1]));
+        triangles.add(new Triangle(vertices[1][0][0], vertices[1][1][0], vertices[1][0][1]));
+        triangles.add(new Triangle(vertices[1][1][1], vertices[1][1][0], vertices[1][0][1]));
+
+        triangles.add(new Triangle(vertices[0][0][0], vertices[0][0][1], vertices[1][0][0]));
+        triangles.add(new Triangle(vertices[1][0][1], vertices[0][0][1], vertices[1][0][0]));
+        triangles.add(new Triangle(vertices[0][1][0], vertices[0][1][1], vertices[1][1][0]));
+        triangles.add(new Triangle(vertices[1][1][1], vertices[0][1][1], vertices[1][1][0]));
+
+        triangles.add(new Triangle(vertices[0][0][0], vertices[0][1][0], vertices[1][0][0]));
+        triangles.add(new Triangle(vertices[1][1][0], vertices[0][1][0], vertices[1][0][0]));
+        triangles.add(new Triangle(vertices[0][0][1], vertices[0][1][1], vertices[1][0][1]));
+        triangles.add(new Triangle(vertices[1][1][1], vertices[0][1][1], vertices[1][0][1]));
+
+        List<Vertex> vertexList = new ArrayList<>();
+        for (Vertex[][] vertex : vertices) {
+            for (Vertex[] ver : vertex) {
+                vertexList.addAll(Arrays.asList(ver));
+            }
+        }
+        return new Mesh(null, null, triangles, vertexList);
+    }
 }

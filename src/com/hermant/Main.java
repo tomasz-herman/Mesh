@@ -4,8 +4,10 @@ import com.hermant.graphics.*;
 import com.hermant.graphics.Renderer;
 import com.hermant.gui.ResolutionChooser;
 import com.hermant.gui.Window;
+import org.joml.Vector3f;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Main {
 
@@ -49,7 +51,8 @@ public class Main {
         mesh.setDiffuse(0.7f);
         mesh.setSpecular(0.7f);
         mesh.setSpecularExponent(30);
-        scene.setMesh(mesh);
+        scene.setGameObject(new GameObject(new Model(List.of(MeshGenerator.cube())), new Vector3f(0, 0, 0), new Vector3f(0,0,0), 1f));
+        scene.setCamera(new Camera(new Vector3f(0, 0, 6), new Vector3f(0, 0f, 0)));
         window.setScene(scene);
         window.setRenderer(renderer);
         window.start();

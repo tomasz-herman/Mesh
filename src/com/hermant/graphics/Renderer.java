@@ -1,22 +1,20 @@
 package com.hermant.graphics;
 
-import org.joml.Interpolationf;
-import org.joml.Vector2i;
-import org.joml.Vector3f;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.*;
 
 public class Renderer {
 
     private static final float FOV = (float) Math.toRadians(60.0f);
-    private static final float Z_NEAR = 1f;
-    private static final float Z_FAR = 1000.f;
+    private static final float Z_NEAR = 0.1f;
+    private static final float Z_FAR = 100.f;
 
     private final static int THREADS = Runtime.getRuntime().availableProcessors();
 
-    private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(THREADS);
+    private final Transformation transformation = new Transformation();
 
     private Canvas canvas;
 
@@ -24,7 +22,7 @@ public class Renderer {
         this.renderFunction = renderFunction;
     }
 
-    private RenderFunction renderFunction = this::renderTriangle;
+    private RenderFunction renderFunction = this::renderTriangleWireframe;
 
     public Renderer(Canvas canvas) {
         this.canvas = canvas;
@@ -33,33 +31,109 @@ public class Renderer {
 
     public void renderScene(Scene scene) {
         canvas.clear();
-        Mesh mesh = scene.getMesh();
-        CountDownLatch latch = new CountDownLatch(mesh.getTriangles().size());
-        for (Triangle triangle : mesh.getTriangles()) {
-            executor.submit(() -> {
-                try {
-                    int thread = (int) (Thread.currentThread().getId() % THREADS);
-                    renderFunction.render(triangle, mesh.getTexture(), mesh.getNormals(), scene.getLight(), thread);
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                latch.countDown();
-                Thread.currentThread().interrupt();
-            });
+        GameObject object = scene.getGameObject();
+        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, canvas.getWidth(), canvas.getHeight(), Z_NEAR, Z_FAR);
+        Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
+        Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
+        Matrix4f MVP = transformation.getModelViewProjectionMatrix(modelViewMatrix, projectionMatrix);
+        for (Mesh mesh : object.getModel().getMeshes()) {
+            for (Vertex vertex : mesh.getVertices()) {
+                vertex.transform(MVP, new Viewport(0, canvas.getWidth(), 0, canvas.getHeight()));
+            }
+            for (Triangle triangle : mesh.getTriangles()) {
+                renderFunction.render(triangle, mesh.getTexture(), mesh.getNormals(), scene.getLight(), 0);
+            }
         }
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        for (Vertex vertex : mesh.getVertices()) canvas.setPixel(vertex.screen.x, vertex.screen.y, 0xffff0000);
-
         canvas.repaint();
     }
 
     @FunctionalInterface
     public interface RenderFunction {
         void render(Triangle t, Texture texture, Texture normal, Light light, int thread);
+    }
+
+    public void renderTriangleWireframe(Triangle t, Texture texture, Texture normals, Light light, int thread){
+        drawLine(t.a.screen, t.b.screen);
+        drawLine(t.c.screen, t.b.screen);
+        drawLine(t.a.screen, t.c.screen);
+    }
+
+    private void drawLine(Vector2i p1, Vector2i p2){
+        int d, dx, dy, ai, bi, xi, yi;
+        int x = p1.x, y = p1.y, x2 = p2.x, y2 = p2.y;
+        int x1 = x, y1 = y;
+        // ustalenie kierunku rysowania
+        if (x1 < x2)
+        {
+            xi = 1;
+            dx = x2 - x1;
+        }
+        else
+        {
+            xi = -1;
+            dx = x1 - x2;
+        }
+        // ustalenie kierunku rysowania
+        if (y1 < y2)
+        {
+            yi = 1;
+            dy = y2 - y1;
+        }
+        else
+        {
+            yi = -1;
+            dy = y1 - y2;
+        }
+        // pierwszy piksel
+        canvas.setPixel(x, y, 0xffffffff);
+        // oś wiodąca OX
+        if (dx > dy)
+        {
+            ai = (dy - dx) * 2;
+            bi = dy * 2;
+            d = bi - dx;
+            // pętla po kolejnych x
+            while (x != x2)
+            {
+                // test współczynnika
+                if (d >= 0)
+                {
+                    x += xi;
+                    y += yi;
+                    d += ai;
+                }
+                else
+                {
+                    d += bi;
+                    x += xi;
+                }
+                canvas.setPixel(x, y, 0xffffffff);
+            }
+        }
+        // oś wiodąca OY
+        else
+        {
+            ai = ( dx - dy ) * 2;
+            bi = dx * 2;
+            d = bi - dy;
+            // pętla po kolejnych y
+            while (y != y2)
+            {
+                // test współczynnika
+                if (d >= 0)
+                {
+                    x += xi;
+                    y += yi;
+                    d += ai;
+                }
+                else
+                {
+                    d += bi;
+                    y += yi;
+                }
+                canvas.setPixel(x, y, 0xffffffff);
+            }
+        }
     }
 
     public void renderTriangleFast(Triangle t, Texture texture, Texture normals, Light light, int thread){
