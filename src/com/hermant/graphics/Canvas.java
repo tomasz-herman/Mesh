@@ -2,26 +2,28 @@ package com.hermant.graphics;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.Arrays;
 
-public class Canvas extends JPanel {
-    private final int width;
-    private final int height;
-    private final BufferedImage image;
-    private final int[] pixels;
-    private final int[] clear;
+public class Canvas extends JPanel implements ComponentListener {
+    private int width;
+    private int height;
+    private BufferedImage image;
+    private int[] pixels;
+    private int[] clear;
 
     public Canvas(int width, int height) {
         this.width = width;
         this.height = height;
-        setMinimumSize(new Dimension(width, height));
-        setPreferredSize(new Dimension(width, height));
+        setSize(width, height);
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
         clear = new int[pixels.length];
         Arrays.fill(clear, 0);
+        addComponentListener(this);
     }
 
     @Override
@@ -42,5 +44,31 @@ public class Canvas extends JPanel {
 
     public void clear(){
         System.arraycopy(clear, 0, pixels, 0, pixels.length);
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        this.width = (int)getSize().getWidth();
+        this.height = (int)getSize().getHeight();
+        setSize(new Dimension(width, height));
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+        clear = new int[pixels.length];
+        Arrays.fill(clear, 0);
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
     }
 }

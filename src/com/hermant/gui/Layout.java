@@ -6,18 +6,12 @@ import com.hermant.graphics.Canvas;
 import org.joml.Vector3f;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
 public class Layout {
 
-    private JPanel main;
     private JPanel canvas_panel;
 
     private Scene scene;
@@ -46,11 +40,6 @@ public class Layout {
         canvas_panel.setLayout(new GridLayout());
         canvas_panel.add(canvas);
     }
-
-    public void initializeTextureCanvases(){
-
-    }
-
 
     public void start(){
         int frames = 0;
@@ -103,8 +92,8 @@ public class Layout {
         }
     }
 
-    public JPanel getMain() {
-        return main;
+    public JPanel getMainPanel() {
+        return canvas_panel;
     }
 
 }

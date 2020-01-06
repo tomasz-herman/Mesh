@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.hermant.gui.Layout">
-  <grid id="27dc6" binding="main" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="canvas_panel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="788" height="852"/>
@@ -9,43 +9,6 @@
       <background color="-16777216"/>
     </properties>
     <border type="none"/>
-    <children>
-      <splitpane id="70727">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="200" height="200"/>
-          </grid>
-        </constraints>
-        <properties>
-          <continuousLayout value="false"/>
-          <dividerLocation value="600"/>
-          <oneTouchExpandable value="true"/>
-        </properties>
-        <border type="none"/>
-        <children>
-          <grid id="4d0b6" binding="canvas_panel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <splitpane position="left"/>
-            </constraints>
-            <properties>
-              <background color="-16777216"/>
-              <foreground color="-16777216"/>
-            </properties>
-            <border type="none"/>
-            <children/>
-          </grid>
-          <grid id="70d3a" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <splitpane position="right"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children/>
-          </grid>
-        </children>
-      </splitpane>
-    </children>
+    <children/>
   </grid>
 </form>

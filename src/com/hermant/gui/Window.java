@@ -2,49 +2,28 @@ package com.hermant.gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 public class Window extends JFrame {
+
+    private static final int MINIMUM_WIDTH = 320;
+    private static final int MINIMUM_HEIGHT = 240;
+
     private Layout layout;
     private String title;
     public Window(String title, int width, int height){
         this.title = title;
         layout = new Layout();
-        setContentPane(layout.getMain());
+        setContentPane(layout.getMainPanel());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle(title);
         setSize(new Dimension(width, height));
-        setMinimumSize(new Dimension(640, 480));
+        setPreferredSize(new Dimension(width, height));
+        setMinimumSize(new Dimension(MINIMUM_WIDTH, MINIMUM_HEIGHT));
         setResizable(true);
         setLocationRelativeTo(null);
-        pack();
         setVisible(true);
         getContentPane().setBackground(Color.BLACK);
         layout.setDisplayFPS(this::setText);
-        pack();
-        revalidate();
-        addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                System.out.println("Resized");
-            }
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentShown(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-
-            }
-        });
     }
 
     public void setText(String text){
