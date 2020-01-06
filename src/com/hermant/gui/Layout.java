@@ -53,7 +53,6 @@ public class Layout {
 
 
     public void start(){
-        new MouseAdapter(canvas);
         int frames = 0;
         int updates = 0;
         long time = 0;
@@ -94,9 +93,9 @@ public class Layout {
     int i = 0;
 
     private void update(float delta){
-        Vector3f rotation = scene.getGameObject().getRotation();
-        if(rot) scene.getGameObject().setRotation(rotation.x, rotation.y + delta*100, rotation.z);
-        else scene.getGameObject().setRotation(rotation.x, rotation.y - delta*100, rotation.z);
+        Vector3f rotation = scene.getGameObjects().get(0).getRotation();
+        if(rot) scene.getGameObjects().get(0).setRotation(rotation.x, rotation.y + delta*100, rotation.z);
+        else scene.getGameObjects().get(0).setRotation(rotation.x, rotation.y - delta*100, rotation.z);
         i++;
         if(i > 3000) {
             rot = !rot;
@@ -107,55 +106,5 @@ public class Layout {
     public JPanel getMain() {
         return main;
     }
-
-    private class MouseAdapter implements MouseListener, MouseMotionListener, MouseWheelListener {
-
-        MouseAdapter(Canvas canvas){
-            canvas.addMouseMotionListener(this);
-            canvas.addMouseListener(this);
-            canvas.addMouseWheelListener(this);
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseMoved(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseWheelMoved(MouseWheelEvent e) {
-
-        }
-    }
-
 
 }

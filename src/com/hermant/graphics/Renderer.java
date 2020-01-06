@@ -31,17 +31,19 @@ public class Renderer {
 
     public void renderScene(Scene scene) {
         canvas.clear();
-        GameObject object = scene.getGameObject();
+        List<GameObject> objects = scene.getGameObjects();
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, canvas.getWidth(), canvas.getHeight(), Z_NEAR, Z_FAR);
         Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
-        Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
-        Matrix4f MVP = transformation.getModelViewProjectionMatrix(modelViewMatrix, projectionMatrix);
-        for (Mesh mesh : object.getModel().getMeshes()) {
-            for (Vertex vertex : mesh.getVertices()) {
-                vertex.transform(MVP, new Viewport(0, canvas.getWidth(), 0, canvas.getHeight()));
-            }
-            for (Triangle triangle : mesh.getTriangles()) {
-                renderFunction.render(triangle, mesh.getTexture(), mesh.getNormals(), scene.getLight(), 0);
+        for (GameObject object : objects) {
+            Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
+            Matrix4f MVP = transformation.getModelViewProjectionMatrix(modelViewMatrix, projectionMatrix);
+            for (Mesh mesh : object.getModel().getMeshes()) {
+                for (Vertex vertex : mesh.getVertices()) {
+                    vertex.transform(MVP, new Viewport(0, canvas.getWidth(), 0, canvas.getHeight()));
+                }
+                for (Triangle triangle : mesh.getTriangles()) {
+                    renderFunction.render(triangle, mesh.getTexture(), mesh.getNormals(), scene.getLight(), 0);
+                }
             }
         }
         canvas.repaint();

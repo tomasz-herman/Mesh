@@ -1,8 +1,10 @@
 package com.hermant.graphics;
 
+import java.util.List;
+
 public class Scene {
 
-    private GameObject object;
+    private List<GameObject> objects;
     private Light light;
     private Camera camera;
 
@@ -14,12 +16,12 @@ public class Scene {
         this.camera = camera;
     }
 
-    public void setGameObject(GameObject object) {
-        this.object = object;
+    public void setGameObject(List<GameObject> objects) {
+        this.objects = objects;
     }
 
-    public GameObject getGameObject() {
-        return object;
+    public List<GameObject> getGameObjects() {
+        return objects;
     }
 
     public Light getLight() {
