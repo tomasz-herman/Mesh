@@ -47,8 +47,8 @@ public class MeshGenerator {
         Vertex[][] vertices = new Vertex[w + 1][h + 1];
         for (int i = 0; i < w + 1; i++) {
             for (int j = 0; j < h + 1; j++) {
-                float x = (float) i / w * (Main.CANVAS_WIDTH - GRID_MARGIN * 2) + GRID_MARGIN;
-                float y = (float) j / h * (Main.CANVAS_HEIGHT - GRID_MARGIN * 2) + GRID_MARGIN;
+                float x = (float) i / w * (Main.DEFAULT_WIDTH - GRID_MARGIN * 2) + GRID_MARGIN;
+                float y = (float) j / h * (Main.DEFAULT_HEIGHT - GRID_MARGIN * 2) + GRID_MARGIN;
                 Vertex v = new Vertex();
                 v.position = new Vector3f(x, 0, y);
                 v.normal = new Vector3f(0, 1, 0);

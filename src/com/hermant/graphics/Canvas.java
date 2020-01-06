@@ -16,14 +16,16 @@ public class Canvas extends JPanel implements ComponentListener {
     private int[] clear;
 
     public Canvas(int width, int height) {
-        this.width = width;
-        this.height = height;
-        setSize(width, height);
+        setSize(this.width = width, this.height = height);
+        initBuffers();
+        addComponentListener(this);
+    }
+
+    private void initBuffers() {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
         clear = new int[pixels.length];
         Arrays.fill(clear, 0);
-        addComponentListener(this);
     }
 
     @Override
@@ -50,11 +52,7 @@ public class Canvas extends JPanel implements ComponentListener {
     public void componentResized(ComponentEvent e) {
         this.width = (int)getSize().getWidth();
         this.height = (int)getSize().getHeight();
-        setSize(new Dimension(width, height));
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-        clear = new int[pixels.length];
-        Arrays.fill(clear, 0);
+        initBuffers();
     }
 
     @Override
