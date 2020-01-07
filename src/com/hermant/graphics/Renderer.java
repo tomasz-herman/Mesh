@@ -1,10 +1,8 @@
 package com.hermant.graphics;
 
-import org.joml.Interpolationf;
-import org.joml.Matrix4f;
-import org.joml.Vector2i;
-import org.joml.Vector3f;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -14,7 +12,7 @@ public class Renderer {
 
     private static final float FOV = (float) Math.toRadians(60.0f);
     private static final float Z_NEAR = 0.1f;
-    private static final float Z_FAR = 100.f;
+    private static final float Z_FAR = 1000.f;
 
     private final static int THREADS = Runtime.getRuntime().availableProcessors();
 
@@ -26,7 +24,7 @@ public class Renderer {
         this.renderFunction = renderFunction;
     }
 
-    private RenderFunction renderFunction = this::renderTriangleWireframe;
+    private RenderFunction renderFunction = this::renderTriangleTexture;
 
     public Renderer(Canvas canvas) {
         this.canvas = canvas;
@@ -59,11 +57,67 @@ public class Renderer {
     }
 
     public void renderTriangleWireframe(Triangle t, Texture texture, Texture normals, Light light, int thread){
-     //   if(t.a.transformed.z > 1 && t.b.transformed.z > 1 && t.c.transformed.z > 1){
+        if(t.a.transformed.z > -1 && t.b.transformed.z > -1 && t.c.transformed.z > -1 & t.a.transformed.z < 1 && t.b.transformed.z < 1 && t.c.transformed.z < 1){
             drawLine(t.a.screen, t.b.screen);
             drawLine(t.c.screen, t.b.screen);
             drawLine(t.a.screen, t.c.screen);
-     //   }
+        }
+    }
+
+    public void renderTriangleTexture(Triangle t, Texture texture, Texture normals, Light light, int thread){
+            if(edgeTable[thread].length != canvas.getHeight()) edgeTable[thread] = new Edge[canvas.getHeight()];
+            Arrays.fill(edgeTable[thread], null);
+            List<Edge> activeEdges = new LinkedList<>();
+            int yMin = Math.min(t.a.screen.y, t.b.screen.y);
+            if(t.a.screen.y != t.b.screen.y) {
+                edgeTable[thread][yMin] = new Edge(t.a.screen, t.b.screen, edgeTable[thread][yMin]);
+            }
+            yMin = Math.min(t.c.screen.y, t.b.screen.y);
+            if(t.c.screen.y != t.b.screen.y) {
+                edgeTable[thread][yMin] = new Edge(t.b.screen, t.c.screen, edgeTable[thread][yMin]);
+            }
+            yMin = Math.min(t.a.screen.y, t.c.screen.y);
+            if(t.a.screen.y != t.c.screen.y) {
+                edgeTable[thread][yMin] = new Edge(t.c.screen, t.a.screen, edgeTable[thread][yMin]);
+            }
+            yMin= Math.min(t.b.screen.y, Math.min(0, yMin));
+            Color3f a = shadeTexture(t.a, texture);
+            Color3f b = shadeTexture(t.b, texture);
+            Color3f c = shadeTexture(t.c, texture);
+            int yMax = Math.max(Math.max(t.b.screen.y, canvas.getHeight()), Math.max(t.a.screen.y, t.c.screen.y));
+            for (int i = yMin; i < yMax; i++) {
+                Edge e = edgeTable[thread][i];
+                while(e != null){
+                    activeEdges.add(e);
+                    e = e.next;
+                }
+                activeEdges.sort(Comparator.comparingDouble(edge -> edge.xMin));
+                for (int j = 0; j < activeEdges.size(); j+=2) {
+                    int from = (int)activeEdges.get(j).xMin;
+                    int to = (int)activeEdges.get(j + 1).xMin;
+                    for (int k = from; k < to; k++) {
+                        Vector3f factors = Interpolationf.interpolationFactorsTriangle(
+                                t.a.screen.x, t.a.screen.y,
+                                t.b.screen.x, t.b.screen.y,
+                                t.c.screen.x, t.c.screen.y,
+                                k, i,
+                                new Vector3f()
+                        );
+                        Vector2f tex = new Vector2f(t.a.texture.x * factors.x + t.b.texture.x * factors.y + t.c.texture.x * factors.z,
+                                t.a.texture.y * factors.x + t.b.texture.y * factors.y + t.c.texture.y * factors.z);
+                        float depth = t.a.transformed.z * factors.x + t.b.transformed.z * factors.y + t.c.transformed.z * factors.z ;
+                        canvas.setPixel(k, i, texture.getSampleNearestNeighbor(tex.x, tex.y), depth);
+                    }
+                }
+                int finalI = i;
+                activeEdges.removeIf(edge -> edge.yMax - 1 == finalI);
+                for (Edge edge : activeEdges) edge.xMin += edge.dx_dy;
+            }
+
+    }
+
+    private static Color3f shadeTexture(Vertex vertex, Texture texture){
+        return new Color3f(texture.getSampleNearestNeighbor(vertex.texture.x, vertex.texture.y));
     }
 
     private void drawLine(Vector2i p1, Vector2i p2){

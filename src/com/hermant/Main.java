@@ -25,9 +25,9 @@ public class Main {
         window.pack();
         Renderer renderer = new Renderer(canvas);
         Scene scene = new Scene();
-        scene.setLight(new Light(0, 0, 0, true));
-        scene.setGameObject(List.of(new GameObject(rock, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 1f)));
-        scene.setCamera(new Camera(new Vector3f(0, -1, -6), new Vector3f(0, 0f, 0)));
+        scene.setLight(new Light(0, 100, 0, true));
+        scene.setGameObject(List.of(new GameObject(rock, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 1.5f)));
+        scene.setCamera(new Camera(new Vector3f(0, 0, 6), new Vector3f(0, 0f, 0)));
         window.setScene(scene);
         window.setRenderer(renderer);
         window.start();
