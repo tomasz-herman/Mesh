@@ -1,9 +1,13 @@
 package com.hermant.graphics;
 
-import org.joml.*;
+import org.joml.Interpolationf;
+import org.joml.Matrix4f;
+import org.joml.Vector2i;
+import org.joml.Vector3f;
 
-import java.lang.Math;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Renderer {
@@ -42,7 +46,7 @@ public class Renderer {
                     vertex.transform(MVP, new Viewport(0, canvas.getWidth(), 0, canvas.getHeight()));
                 }
                 for (Triangle triangle : mesh.getTriangles()) {
-                    renderFunction.render(triangle, mesh.getTexture(), mesh.getNormals(), scene.getLight(), 0);
+                    renderFunction.render(triangle, mesh.getMaterial().getDiffuseTexture(), mesh.getMaterial().getNormalsTexture(), scene.getLight(), 0);
                 }
             }
         }
@@ -55,9 +59,11 @@ public class Renderer {
     }
 
     public void renderTriangleWireframe(Triangle t, Texture texture, Texture normals, Light light, int thread){
-        drawLine(t.a.screen, t.b.screen);
-        drawLine(t.c.screen, t.b.screen);
-        drawLine(t.a.screen, t.c.screen);
+     //   if(t.a.transformed.z > 1 && t.b.transformed.z > 1 && t.c.transformed.z > 1){
+            drawLine(t.a.screen, t.b.screen);
+            drawLine(t.c.screen, t.b.screen);
+            drawLine(t.a.screen, t.c.screen);
+     //   }
     }
 
     private void drawLine(Vector2i p1, Vector2i p2){

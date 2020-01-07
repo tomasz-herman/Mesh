@@ -1,8 +1,7 @@
 package com.hermant.gui;
 
-import com.hermant.Main;
-import com.hermant.graphics.*;
 import com.hermant.graphics.Canvas;
+import com.hermant.graphics.Scene;
 import org.joml.Vector3f;
 
 import javax.swing.*;
@@ -83,8 +82,8 @@ public class Layout {
 
     private void update(float delta){
         Vector3f rotation = scene.getGameObjects().get(0).getRotation();
-        if(rot) scene.getGameObjects().get(0).setRotation(rotation.x, rotation.y + delta*100, rotation.z);
-        else scene.getGameObjects().get(0).setRotation(rotation.x, rotation.y - delta*100, rotation.z);
+        if(rot) scene.getGameObjects().get(0).setRotation(rotation.x, rotation.y + delta*10, rotation.z);
+        else scene.getGameObjects().get(0).setRotation(rotation.x, rotation.y - delta*10, rotation.z);
         i++;
         if(i > 3000) {
             rot = !rot;

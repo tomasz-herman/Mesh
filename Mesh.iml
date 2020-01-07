@@ -10,5 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.joml:joml:1.9.19" level="project" />
     <orderEntry type="library" name="org.l33tlabs.twl:pngdecoder:1.0" level="project" />
+    <orderEntry type="library" name="lwjgl-assimp-javadoc" level="project" />
   </component>
 </module>

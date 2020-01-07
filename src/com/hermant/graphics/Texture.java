@@ -1,26 +1,38 @@
 package com.hermant.graphics;
 
-import de.matthiasmann.twl.utils.PNGDecoder;
+import com.hermant.utils.FileUtils;
+import org.lwjgl.system.MemoryStack;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.Arrays;
+
+import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 
 public class Texture {
 
     private int width, height;
     private int[] pixels;
 
+
+
     public Texture(String path) throws IOException {
-        PNGDecoder decoder = new PNGDecoder(new FileInputStream(path));
-        ByteBuffer buf = ByteBuffer.allocateDirect(3 * decoder.getWidth() * decoder.getHeight());
-        decoder.decode(buf, decoder.getWidth() * 3, PNGDecoder.Format.RGB);
-        width = decoder.getWidth();
-        height = decoder.getHeight();
+        ByteBuffer imageData = FileUtils.ioResourceToByteBuffer(path, 1024);
+        ByteBuffer decodedImage;
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer w = stack.mallocInt(1);
+            IntBuffer h = stack.mallocInt(1);
+            IntBuffer comp = stack.mallocInt(1);
+            decodedImage = stbi_load_from_memory(imageData, w, h, comp, 3);
+            this.width = w.get();
+            this.height = h.get();
+        }
+        if (decodedImage ==null) throw new IOException();
+
         pixels = new int[width * height];
         for (int i = 0; i < width * height; i++)
-            pixels[i] = ((buf.get(3 * i) << 16) & 0xff0000) | ((buf.get(3 * i + 1) << 8) & 0xff00) | ((buf.get(3 * i + 2)) & 0xff);
+            pixels[i] = ((decodedImage.get(3 * i) << 16) & 0xff0000) | ((decodedImage.get(3 * i + 1) << 8) & 0xff00) | ((decodedImage.get(3 * i + 2)) & 0xff);
     }
 
     public Texture(int width, int height, Color3f color){
