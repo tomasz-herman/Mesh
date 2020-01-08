@@ -13,8 +13,10 @@ public class Main {
 
     public static void main(String[] args) {
         Model rock = null;
+        Model sponza = null;
         try {
             rock = ModelLoader.load("res/models/rock/rock.obj", "res/models/rock");
+            sponza = ModelLoader.load("res/models/sponza/sponza.obj", "res/models/sponza");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -26,8 +28,9 @@ public class Main {
         Renderer renderer = new Renderer(canvas);
         Scene scene = new Scene();
         scene.setLight(new Light(0, 100, 0, true));
-        scene.setGameObject(List.of(new GameObject(rock, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 1.5f)));
-        scene.setCamera(new Camera(new Vector3f(0, 0, 6), new Vector3f(0, 0f, 0)));
+        scene.setGameObject(List.of(new GameObject(sponza, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 0.02f),
+                new GameObject(sponza, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 0.02f)));
+        scene.setCamera(new Camera(new Vector3f(0, 60, 0), new Vector3f(80, 0f, 0)));
         window.setScene(scene);
         window.setRenderer(renderer);
         window.start();

@@ -15,6 +15,7 @@ public class Canvas extends JPanel implements ComponentListener {
     private int[] pixels;
     private int[] clear;
     private float[] depth;
+    private float[] clearDepth;
 
     public Canvas(int width, int height) {
         setSize(this.width = width, this.height = height);
@@ -27,8 +28,10 @@ public class Canvas extends JPanel implements ComponentListener {
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
         clear = new int[pixels.length];
         depth = new float[pixels.length];
+        clearDepth = new float[pixels.length];
         Arrays.fill(clear, 0);
-        Arrays.fill(depth, Float.MIN_VALUE);
+        Arrays.fill(depth, 1f);
+        Arrays.fill(clearDepth, 1f);
     }
 
     @Override
@@ -49,14 +52,14 @@ public class Canvas extends JPanel implements ComponentListener {
 
     public void setPixel(int x, int y, Color3f color, float depth){
         if(x >= width || x < 0 || y >= height || y < 0) return;
-        if(depth < this.depth[y * width + x]) return;
+        if(depth > this.depth[y * width + x]) return;
         else this.depth[y * width + x] = depth;
         pixels[y * width + x] = color.getRGB();
     }
 
     public void setPixel(int x, int y, int color, float depth){
         if(x >= width || x < 0 || y >= height || y < 0) return;
-        if(depth < this.depth[y * width + x]) return;
+        if(depth > this.depth[y * width + x]) return;
         else this.depth[y * width + x] = depth;
         pixels[y * width + x] = color;
     }
@@ -64,7 +67,7 @@ public class Canvas extends JPanel implements ComponentListener {
 
     public void clear(){
         System.arraycopy(clear, 0, pixels, 0, pixels.length);
-        Arrays.fill(depth, Float.MIN_VALUE);
+        System.arraycopy(clearDepth, 0, depth, 0, depth.length);
     }
 
     @Override

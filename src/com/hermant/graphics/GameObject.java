@@ -25,6 +25,12 @@ public class GameObject {
         this.position.z = z;
     }
 
+    public void move(float x, float y, float z) {
+        this.position.x += x;
+        this.position.y += y;
+        this.position.z += z;
+    }
+
     public float getScale() {
         return scale;
     }
