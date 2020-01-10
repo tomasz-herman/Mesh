@@ -77,17 +77,12 @@ public class Layout {
         renderer.renderScene(scene);
     }
 
-    boolean rot = false;
-    int i = 0;
-
     private void update(float delta){
-        Vector3f rotation = scene.getGameObjects().get(0).getRotation();
-        scene.getGameObjects().get(0).setRotation(rotation.x+ delta*10, rotation.y + delta*10, rotation.z+ delta*10);
-        i++;
-        if(i > 30) {
-            rot = !rot;
-            i = 0;
-        }
+        Vector3f rotation = scene.getGameObjects().get(1).getRotation();
+        scene.getGameObjects().get(1).setRotation(rotation.x+ delta*15, rotation.y + delta*10, rotation.z);
+        Vector3f rotation2 = scene.getGameObjects().get(0).getRotation();
+        scene.getGameObjects().get(0).setRotation(rotation2.x+ delta, rotation2.y + delta*20, rotation2.z);
+
     }
 
     public JPanel getMainPanel() {

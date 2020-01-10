@@ -28,9 +28,9 @@ public class Main {
         Renderer renderer = new Renderer(canvas);
         Scene scene = new Scene();
         scene.setLight(new Light(0, 100, 0, true));
-        scene.setGameObject(List.of(new GameObject(sponza, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 0.02f),
+        scene.setGameObject(List.of(new GameObject(sponza, new Vector3f(0, -20, 0), new Vector3f(0,0,0), 0.02f),
                 new GameObject(sponza, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 0.02f)));
-        scene.setCamera(new Camera(new Vector3f(0, 60, 0), new Vector3f(80, 0f, 0)));
+        scene.setCamera(new Camera(new Vector3f(0, 80, 60), new Vector3f(60, 0f, 0)));
         window.setScene(scene);
         window.setRenderer(renderer);
         window.start();
