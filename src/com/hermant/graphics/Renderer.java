@@ -10,7 +10,7 @@ import java.util.List;
 public class Renderer {
 
     private static final float FOV = (float) Math.toRadians(60.0f);
-    private static final float Z_NEAR = 10f;
+    private static final float Z_NEAR = 1f;
     private static final float Z_FAR = 1000.f;
 
     private final static int THREADS = Runtime.getRuntime().availableProcessors();
@@ -43,9 +43,6 @@ public class Renderer {
             for (Mesh mesh : object.getModel().getMeshes()) {
                 mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, viewport));
                 mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
-//                for (Triangle triangle : mesh.getTriangles()) {
-//                    renderFunction.render(triangle, mesh.getMaterial(), scene.getLight());
-//                }
             }
         }
         canvas.repaint();
@@ -64,8 +61,8 @@ public class Renderer {
         }
     }
 
-    private static float orientation(Vector2i a, Vector2i b, Vector2i c) {
-        return (float)(b.x-a.x)*(float)(c.y-a.y) - (float)(b.y-a.y)*(float)((c.x-a.x));
+    private static int orientation(Vector2i a, Vector2i b, Vector2i c) {
+        return (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*((c.x-a.x));
     }
 
     private static int min(int a, int b, int c){
@@ -90,29 +87,30 @@ public class Renderer {
         if(minX > viewport.right) return;
         if(minY > viewport.bottom) return;
 
+        int area = orientation(v0, v1, v2);
+        if(area < 1) return;
+
         // Clip against screen bounds
         minX = Math.max(minX, 0);
         minY = Math.max(minY, 0);
         maxX = Math.min(maxX, canvas.getWidth() - 1);
         maxY = Math.min(maxY, canvas.getHeight() - 1);
 
-        float area = orientation(v0, v1, v2);
 
         // Rasterize
         Vector2i p = new Vector2i();
         for (p.y = minY; p.y <= maxY; p.y++) {
             for (p.x = minX; p.x <= maxX; p.x++) {
                 // Determine barycentric coordinates
-                float w0 = orientation(v1, v2, p);
-                float w1 = orientation(v2, v0, p);
-                float w2 = orientation(v0, v1, p);
+                int w0 = orientation(v1, v2, p);
+                int w1 = orientation(v2, v0, p);
+                int w2 = orientation(v0, v1, p);
 
                 // If p is on or inside all edges, render pixel.
-                if (w0 >= 0 & w1 >= 0 & w2 >= 0){
-                    if((w0 + w1 + w2)<1.0f)continue;
-                    float f0 = w0 / area;
-                    float f1 = w1 / area;
-                    float f2 = w2 / area;
+                if ((w0 | w1 | w2) >= 0){
+                    float f0 = (float)w0 / area;
+                    float f1 = (float)w1 / area;
+                    float f2 = 1.0f - f0 - f1;
 
                     Vector2f tex = new Vector2f(t.c.texture.x * f0 + t.b.texture.x * f1 + t.a.texture.x * f2,
                             t.c.texture.y * f0 + t.b.texture.y * f1 + t.a.texture.y * f2);
@@ -122,11 +120,7 @@ public class Renderer {
                     if(tex.x > 1) tex.x -= (int) tex.x;
                     if(tex.y > 1) tex.y -= (int) tex.y;
 
-
-
- //                   float depth = 1.0f / (f0 / t.a.transformed.z + f1 / t.b.transformed.z + f2 / t.c.transformed.z);
-                    float depth = (f0 * t.a.transformed.z + f1 * t.b.transformed.z + f2 * t.c.transformed.z);
-      //              System.out.println(z);
+                    float depth = (f0 * t.c.transformed.z + f1 * t.b.transformed.z + f2 * t.a.transformed.z);
                     if(m.getDiffuseTexture() == null || depth > 1 || depth < -1)continue;
                     canvas.setPixel(p.x, p.y, m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), depth);
                 }
