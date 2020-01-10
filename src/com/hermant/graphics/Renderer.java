@@ -1,9 +1,8 @@
 package com.hermant.graphics;
 
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector2i;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.List;
 
 public class Renderer {
@@ -36,8 +35,11 @@ public class Renderer {
         for (GameObject object : objects) {
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
             Matrix4f MVP = transformation.getModelViewProjectionMatrix(modelViewMatrix, projectionMatrix);
+            FrustumIntersection intersection = new FrustumIntersection(MVP);
             if(object.getModel().getMeshes().size() > THREADS){
                 object.getModel().getMeshes().parallelStream().forEach(mesh -> {
+                    AABBf box = mesh.getAABB();
+                    if(!intersection.testAab(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) return;
                     if(mesh.getVertices().size() > THREADS << 2)
                         mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
                     else
@@ -49,6 +51,8 @@ public class Renderer {
                 });
             } else {
                 object.getModel().getMeshes().forEach(mesh -> {
+                    AABBf box = mesh.getAABB();
+                    if(!intersection.testAab(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) return;
                     if(mesh.getVertices().size() > THREADS << 2)
                         mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
                     else
