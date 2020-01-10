@@ -97,6 +97,11 @@ public class Renderer {
         maxY = Math.min(maxY, canvas.getHeight() - 1);
 
 
+        Vector2f texA = new Vector2f(t.a.texture.x * t.a.transformed.w, t.a.texture.y * t.a.transformed.w);
+        Vector2f texB = new Vector2f(t.b.texture.x * t.b.transformed.w, t.b.texture.y * t.b.transformed.w);
+        Vector2f texC = new Vector2f(t.c.texture.x * t.c.transformed.w, t.c.texture.y * t.c.transformed.w);
+
+
         // Rasterize
         Vector2i p = new Vector2i();
         for (p.y = minY; p.y <= maxY; p.y++) {
@@ -108,12 +113,16 @@ public class Renderer {
 
                 // If p is on or inside all edges, render pixel.
                 if ((w0 | w1 | w2) >= 0){
+
+
                     float f0 = (float)w0 / area;
                     float f1 = (float)w1 / area;
                     float f2 = 1.0f - f0 - f1;
 
-                    Vector2f tex = new Vector2f(t.c.texture.x * f0 + t.b.texture.x * f1 + t.a.texture.x * f2,
-                            t.c.texture.y * f0 + t.b.texture.y * f1 + t.a.texture.y * f2);
+                    float z = 1 / (f0 * t.c.transformed.w + f1 * t.b.transformed.w + f2 * t.a.transformed.w);
+
+                    Vector2f tex = new Vector2f(z * (texC.x * f0 + texB.x * f1 + texA.x * f2),
+                            z * (texC.y * f0 + texB.y * f1 + texA.y * f2));
 
                     if(tex.x < 0) tex.x -= (int) tex.x - 1;
                     if(tex.y < 0) tex.y -= (int) tex.y - 1;
