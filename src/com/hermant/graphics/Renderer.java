@@ -25,11 +25,8 @@ public class Renderer {
 
     private RenderFunction renderFunction = this::renderTriangle;
 
-    private Viewport viewport;
-
     public Renderer(Canvas canvas) {
         this.canvas = canvas;
-        viewport = new Viewport(canvas.getWidth(), canvas.getHeight());
     }
 
     public void renderScene(Scene scene) {
@@ -41,7 +38,7 @@ public class Renderer {
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
             Matrix4f MVP = transformation.getModelViewProjectionMatrix(modelViewMatrix, projectionMatrix);
             for (Mesh mesh : object.getModel().getMeshes()) {
-                mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, viewport));
+                mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
                 mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
             }
         }
@@ -76,7 +73,7 @@ public class Renderer {
 
     public void renderTriangle(Triangle t, Material m, Light l){
         Vector2i v0 = t.c.screen, v1 = t.b.screen, v2 = t.a.screen;
-        if(v0.x < 0 || v1.x < 0 || v2.x < 0 || v0.y < 0 || v1.y < 0 || v2.y < 0 || v0.y > viewport.bottom || v1.y > viewport.bottom || v2.y > viewport.bottom || v0.x > viewport.right || v1.x > viewport.right || v2.x > viewport.right)return;
+        if(v0.x < 0 || v1.x < 0 || v2.x < 0 || v0.y < 0 || v1.y < 0 || v2.y < 0 || v0.y > canvas.getHeight() || v1.y > canvas.getHeight() || v2.y > canvas.getHeight() || v0.x > canvas.getWidth() || v1.x > canvas.getWidth() || v2.x > canvas.getWidth())return;
         int minX = min(v0.x, v1.x, v2.x);
         int minY = min(v0.y, v1.y, v2.y);
         int maxX = max(v0.x, v1.x, v2.x);
@@ -84,8 +81,8 @@ public class Renderer {
 
         if(maxY < 0) return;
         if(maxX < 0) return;
-        if(minX > viewport.right) return;
-        if(minY > viewport.bottom) return;
+        if(minX > canvas.getWidth()) return;
+        if(minY > canvas.getHeight()) return;
 
         int area = orientation(v0, v1, v2);
         if(area < 1) return;
