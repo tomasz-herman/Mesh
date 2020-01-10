@@ -11,7 +11,7 @@ public class Renderer {
 
     private static final float FOV = (float) Math.toRadians(60.0f);
     private static final float Z_NEAR = 10f;
-    private static final float Z_FAR = 200.f;
+    private static final float Z_FAR = 1000.f;
 
     private final static int THREADS = Runtime.getRuntime().availableProcessors();
 
@@ -42,10 +42,10 @@ public class Renderer {
             Matrix4f MVP = transformation.getModelViewProjectionMatrix(modelViewMatrix, projectionMatrix);
             for (Mesh mesh : object.getModel().getMeshes()) {
                 mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, viewport));
-
-                for (Triangle triangle : mesh.getTriangles()) {
-                    renderFunction.render(triangle, mesh.getMaterial(), scene.getLight());
-                }
+                mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+//                for (Triangle triangle : mesh.getTriangles()) {
+//                    renderFunction.render(triangle, mesh.getMaterial(), scene.getLight());
+//                }
             }
         }
         canvas.repaint();
@@ -78,7 +78,8 @@ public class Renderer {
 
 
     public void renderTriangle(Triangle t, Material m, Light l){
-        Vector2i v0 = t.a.screen, v1 = t.b.screen, v2 = t.c.screen;
+        Vector2i v0 = t.c.screen, v1 = t.b.screen, v2 = t.a.screen;
+        if(v0.x < 0 || v1.x < 0 || v2.x < 0 || v0.y < 0 || v1.y < 0 || v2.y < 0 || v0.y > viewport.bottom || v1.y > viewport.bottom || v2.y > viewport.bottom || v0.x > viewport.right || v1.x > viewport.right || v2.x > viewport.right)return;
         int minX = min(v0.x, v1.x, v2.x);
         int minY = min(v0.y, v1.y, v2.y);
         int maxX = max(v0.x, v1.x, v2.x);
@@ -113,8 +114,8 @@ public class Renderer {
                     float f1 = w1 / area;
                     float f2 = w2 / area;
 
-                    Vector2f tex = new Vector2f(t.a.texture.x * f0 + t.b.texture.x * f1 + t.c.texture.x * f2,
-                            t.a.texture.y * f0 + t.b.texture.y * f1 + t.c.texture.y * f2);
+                    Vector2f tex = new Vector2f(t.c.texture.x * f0 + t.b.texture.x * f1 + t.a.texture.x * f2,
+                            t.c.texture.y * f0 + t.b.texture.y * f1 + t.a.texture.y * f2);
 
                     if(tex.x < 0) tex.x -= (int) tex.x - 1;
                     if(tex.y < 0) tex.y -= (int) tex.y - 1;

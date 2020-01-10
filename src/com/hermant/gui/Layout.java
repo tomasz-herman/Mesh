@@ -78,10 +78,8 @@ public class Layout {
     }
 
     private void update(float delta){
-        Vector3f rotation = scene.getGameObjects().get(1).getRotation();
-        scene.getGameObjects().get(1).setRotation(rotation.x+ delta*15, rotation.y + delta*10, rotation.z);
-        Vector3f rotation2 = scene.getGameObjects().get(0).getRotation();
-        scene.getGameObjects().get(0).setRotation(rotation2.x+ delta, rotation2.y + delta*20, rotation2.z);
+        Vector3f rotation = scene.getGameObjects().get(0).getRotation();
+        scene.getGameObjects().get(0).setRotation(rotation.x, rotation.y + delta*10, rotation.z);
 
     }
 
