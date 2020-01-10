@@ -21,14 +21,15 @@ public class ModelLoader {
 
     public static Model load(String resourcePath, String texturesDir, int flags) throws Exception {
         long startTime = System.nanoTime();
-        System.out.println("Loading: " + resourcePath);
+        vertNum = triNum = 0;
+        System.out.println("[ModelLoader] Loading: " + resourcePath);
         AIScene aiScene = aiImportFile(resourcePath, flags);
         if (aiScene == null) {
-            throw new Exception("Error loading model " + resourcePath);
+            throw new Exception("[ModelLoader] Error loading model " + resourcePath);
         }
 
         int numMaterials = aiScene.mNumMaterials();
-        System.out.println("Number of materials: " + numMaterials);
+        System.out.println("[ModelLoader] Number of materials: " + numMaterials);
         PointerBuffer aiMaterials = aiScene.mMaterials();
         List<Material> materials = new ArrayList<>();
         for (int i = 0; i < numMaterials; i++) {
@@ -37,7 +38,7 @@ public class ModelLoader {
         }
 
         int numMeshes = aiScene.mNumMeshes();
-        System.out.println("Number of meshes: " + numMeshes);
+        System.out.println("[ModelLoader] Number of meshes: " + numMeshes);
         PointerBuffer aiMeshes = aiScene.mMeshes();
         List<Mesh> meshes = new ArrayList<>();
         for (int i = 0; i < numMeshes; i++) {
@@ -46,7 +47,8 @@ public class ModelLoader {
             meshes.add(mesh);
         }
         long estimatedTime = System.nanoTime() - startTime;
-        System.out.println("Loaded in: " + (double)estimatedTime / 1_000_000_000.0 + " seconds");
+        System.out.println("[ModelLoader] Loaded in: " + (double)estimatedTime / 1_000_000_000.0 + " seconds");
+        System.out.println("[ModelLoader] " + vertNum + " vertices, " + triNum+ " triangles");
         return new Model(meshes);
     }
 
@@ -69,7 +71,7 @@ public class ModelLoader {
 
         aiGetMaterialString(aiMaterial, AI_MATKEY_NAME, 0, 0, string);
 
-        System.out.println("Processing material: " + string.dataString());
+        System.out.println("[ModelLoader] Processing material: " + string.dataString());
 
         Texture diffuseTexture = loadTexture(aiMaterial, aiTextureType_DIFFUSE, texturesDir);
         Texture specularTexture = loadTexture(aiMaterial, aiTextureType_SPECULAR, texturesDir);
@@ -153,6 +155,8 @@ public class ModelLoader {
         return texture;
     }
 
+    private static int vertNum = 0;
+    private static int triNum = 0;
     private static Mesh processMesh(AIMesh aiMesh, List<Material> materials) {
         List<Float> positions = new ArrayList<>();
         List<Float> textures = new ArrayList<>();
@@ -161,7 +165,7 @@ public class ModelLoader {
         List<Float> bitangents = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
 
-        System.out.println("Processing mesh: " + aiMesh.mName().dataString());
+        System.out.println("[ModelLoader] Processing mesh: " + aiMesh.mName().dataString());
 
         processVertices(aiMesh, positions);
         processNormals(aiMesh, normals);
@@ -187,6 +191,8 @@ public class ModelLoader {
             Triangle t = new Triangle(vertices.get(indices.get(i)), vertices.get(indices.get(i+1)), vertices.get(indices.get(i+2)));
             triangles.add(t);
         }
+        vertNum += vertices.size();
+        triNum += triangles.size();
 
         Mesh mesh = new Mesh(triangles, vertices);
         Material material;
