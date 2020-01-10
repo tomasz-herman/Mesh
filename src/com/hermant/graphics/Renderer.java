@@ -1,6 +1,5 @@
 package com.hermant.graphics;
 
-
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -37,9 +36,28 @@ public class Renderer {
         for (GameObject object : objects) {
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
             Matrix4f MVP = transformation.getModelViewProjectionMatrix(modelViewMatrix, projectionMatrix);
-            for (Mesh mesh : object.getModel().getMeshes()) {
-                mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
-                mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+            if(object.getModel().getMeshes().size() > THREADS){
+                object.getModel().getMeshes().parallelStream().forEach(mesh -> {
+                    if(mesh.getVertices().size() > THREADS << 2)
+                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
+                    else
+                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
+                    if(mesh.getTriangles().size() > THREADS << 2)
+                        mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+                    else
+                        mesh.getTriangles().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+                });
+            } else {
+                object.getModel().getMeshes().forEach(mesh -> {
+                    if(mesh.getVertices().size() > THREADS << 2)
+                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
+                    else
+                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
+                    if(mesh.getTriangles().size() > THREADS << 2)
+                        mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+                    else
+                        mesh.getTriangles().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+                });
             }
         }
         canvas.repaint();
