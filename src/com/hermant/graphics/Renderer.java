@@ -98,15 +98,25 @@ public class Renderer {
         Vector2f texB = new Vector2f(t.b.texture.x * t.b.transformed.w, t.b.texture.y * t.b.transformed.w);
         Vector2f texC = new Vector2f(t.c.texture.x * t.c.transformed.w, t.c.texture.y * t.c.transformed.w);
 
+        // Triangle setup
+        int A01 = v0.y - v1.y, B01 = v1.x - v0.x;
+        int A12 = v1.y - v2.y, B12 = v2.x - v1.x;
+        int A20 = v2.y - v0.y, B20 = v0.x - v2.x;
+
 
         // Rasterize
-        Vector2i p = new Vector2i();
+        Vector2i p = new Vector2i(minX, minY);
+
+        int w0_row = orientation(v1, v2, p);
+        int w1_row = orientation(v2, v0, p);
+        int w2_row = orientation(v0, v1, p);
+
         for (p.y = minY; p.y <= maxY; p.y++) {
+            // Determine barycentric coordinates
+            int w0 = w0_row;
+            int w1 = w1_row;
+            int w2 = w2_row;
             for (p.x = minX; p.x <= maxX; p.x++) {
-                // Determine barycentric coordinates
-                int w0 = orientation(v1, v2, p);
-                int w1 = orientation(v2, v0, p);
-                int w2 = orientation(v0, v1, p);
 
                 // If p is on or inside all edges, render pixel.
                 if ((w0 | w1 | w2) >= 0){
@@ -130,7 +140,16 @@ public class Renderer {
                     if(m.getDiffuseTexture() == null || depth > 1 || depth < -1)continue;
                     canvas.setPixel(p.x, p.y, m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), depth);
                 }
+
+                // One step to the right
+                w0 += A12;
+                w1 += A20;
+                w2 += A01;
             }
+            // One row step
+            w0_row += B12;
+            w1_row += B20;
+            w2_row += B01;
         }
     }
 
