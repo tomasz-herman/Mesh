@@ -34,6 +34,7 @@ public class Renderer {
         Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
         for (GameObject object : objects) {
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
+            Matrix3f normalMatrix = transformation.getNormalMatrix(modelViewMatrix);
             Matrix4f MVP = transformation.getModelViewProjectionMatrix(modelViewMatrix, projectionMatrix);
             FrustumIntersection intersection = new FrustumIntersection(MVP);
             if(object.getModel().getMeshes().size() > THREADS){
@@ -41,9 +42,9 @@ public class Renderer {
                     AABBf box = mesh.getAABB();
                     if(!intersection.testAab(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) return;
                     if(mesh.getVertices().size() > THREADS << 2)
-                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
+                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     else
-                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
+                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     if(mesh.getTriangles().size() > THREADS << 2)
                         mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
                     else
@@ -54,9 +55,9 @@ public class Renderer {
                     AABBf box = mesh.getAABB();
                     if(!intersection.testAab(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) return;
                     if(mesh.getVertices().size() > THREADS << 2)
-                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
+                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     else
-                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, canvas.getWidth(), canvas.getHeight()));
+                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     if(mesh.getTriangles().size() > THREADS << 2)
                         mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
                     else
