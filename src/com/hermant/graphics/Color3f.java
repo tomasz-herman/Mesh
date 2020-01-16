@@ -48,6 +48,11 @@ public class Color3f {
         return this;
     }
 
+    public Color3f add(float b){
+        red += b; green += b; blue += b;
+        return this;
+    }
+
     public Color3f sub(Color3f b){
         red -= b.red; green -= b.green; blue -= b.blue;
         return this;

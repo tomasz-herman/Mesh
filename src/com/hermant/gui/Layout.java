@@ -2,7 +2,6 @@ package com.hermant.gui;
 
 import com.hermant.graphics.Canvas;
 import com.hermant.graphics.Scene;
-import org.joml.Vector3f;
 
 import javax.swing.*;
 import java.awt.*;
@@ -78,9 +77,7 @@ public class Layout {
     }
 
     private void update(float delta){
-        Vector3f rotation = scene.getGameObjects().get(0).getRotation();
-        scene.getGameObjects().get(0).setRotation(rotation.x, rotation.y + delta*10, rotation.z);
-
+        scene.getCamera().rotate(0, 1 * delta, 0);
     }
 
     public JPanel getMainPanel() {

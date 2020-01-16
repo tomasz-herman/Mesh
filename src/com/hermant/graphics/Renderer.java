@@ -32,6 +32,7 @@ public class Renderer {
         List<GameObject> objects = scene.getGameObjects();
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, canvas.getWidth(), canvas.getHeight(), Z_NEAR, Z_FAR);
         Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
+        scene.getLight().calculatePositionEyeSpace(viewMatrix);
         for (GameObject object : objects) {
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
             Matrix3f normalMatrix = transformation.getNormalMatrix(modelViewMatrix);
@@ -42,9 +43,9 @@ public class Renderer {
                     AABBf box = mesh.getAABB();
                     if(!intersection.testAab(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) return;
                     if(mesh.getVertices().size() > THREADS << 2)
-                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, normalMatrix, canvas.getWidth(), canvas.getHeight()));
+                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     else
-                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, normalMatrix, canvas.getWidth(), canvas.getHeight()));
+                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     if(mesh.getTriangles().size() > THREADS << 2)
                         mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
                     else
@@ -55,9 +56,9 @@ public class Renderer {
                     AABBf box = mesh.getAABB();
                     if(!intersection.testAab(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) return;
                     if(mesh.getVertices().size() > THREADS << 2)
-                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, normalMatrix, canvas.getWidth(), canvas.getHeight()));
+                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     else
-                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, normalMatrix, canvas.getWidth(), canvas.getHeight()));
+                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     if(mesh.getTriangles().size() > THREADS << 2)
                         mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
                     else
@@ -74,7 +75,7 @@ public class Renderer {
     }
 
     public void renderTriangleWireframe(Triangle t, Material m, Light l){
-        if(t.a.transformed.z > -1 && t.b.transformed.z > -1 && t.c.transformed.z > -1 & t.a.transformed.z < 1 && t.b.transformed.z < 1 && t.c.transformed.z < 1){
+        if(t.a.transformedPosition.z > -1 && t.b.transformedPosition.z > -1 && t.c.transformedPosition.z > -1 & t.a.transformedPosition.z < 1 && t.b.transformedPosition.z < 1 && t.c.transformedPosition.z < 1){
             drawLine(t.a.screen, t.b.screen);
             drawLine(t.c.screen, t.b.screen);
             drawLine(t.a.screen, t.c.screen);
@@ -117,9 +118,17 @@ public class Renderer {
         maxY = Math.min(maxY, canvas.getHeight() - 1);
 
 
-        Vector2f texA = new Vector2f(t.a.texture.x * t.a.transformed.w, t.a.texture.y * t.a.transformed.w);
-        Vector2f texB = new Vector2f(t.b.texture.x * t.b.transformed.w, t.b.texture.y * t.b.transformed.w);
-        Vector2f texC = new Vector2f(t.c.texture.x * t.c.transformed.w, t.c.texture.y * t.c.transformed.w);
+        Vector2f texA = new Vector2f(t.a.texture.x * t.a.transformedPosition.w, t.a.texture.y * t.a.transformedPosition.w);
+        Vector2f texB = new Vector2f(t.b.texture.x * t.b.transformedPosition.w, t.b.texture.y * t.b.transformedPosition.w);
+        Vector2f texC = new Vector2f(t.c.texture.x * t.c.transformedPosition.w, t.c.texture.y * t.c.transformedPosition.w);
+
+        Vector3f posA = new Vector3f(t.a.transformedPositionEyeSpace.x * t.a.transformedPosition.w, t.a.transformedPositionEyeSpace.y * t.a.transformedPosition.w, t.a.transformedPositionEyeSpace.z * t.a.transformedPosition.w);
+        Vector3f posB = new Vector3f(t.b.transformedPositionEyeSpace.x * t.b.transformedPosition.w, t.b.transformedPositionEyeSpace.y * t.b.transformedPosition.w, t.b.transformedPositionEyeSpace.z * t.b.transformedPosition.w);
+        Vector3f posC = new Vector3f(t.c.transformedPositionEyeSpace.x * t.c.transformedPosition.w, t.c.transformedPositionEyeSpace.y * t.c.transformedPosition.w, t.c.transformedPositionEyeSpace.z * t.c.transformedPosition.w);
+
+        Vector3f normA = new Vector3f(t.a.transformedNormal.x * t.a.transformedPosition.w, t.a.transformedNormal.y * t.a.transformedPosition.w, t.a.transformedNormal.z * t.a.transformedPosition.w);
+        Vector3f normB = new Vector3f(t.b.transformedNormal.x * t.b.transformedPosition.w, t.b.transformedNormal.y * t.b.transformedPosition.w, t.b.transformedNormal.z * t.b.transformedPosition.w);
+        Vector3f normC = new Vector3f(t.c.transformedNormal.x * t.c.transformedPosition.w, t.c.transformedNormal.y * t.c.transformedPosition.w, t.c.transformedNormal.z * t.c.transformedPosition.w);
 
         // Triangle setup
         int A01 = v0.y - v1.y, B01 = v1.x - v0.x;
@@ -149,19 +158,29 @@ public class Renderer {
                     float f1 = (float)w1 / area;
                     float f2 = 1.0f - f0 - f1;
 
-                    float z = 1 / (f0 * t.c.transformed.w + f1 * t.b.transformed.w + f2 * t.a.transformed.w);
+                    float z = 1 / (f0 * t.c.transformedPosition.w + f1 * t.b.transformedPosition.w + f2 * t.a.transformedPosition.w);
 
                     Vector2f tex = new Vector2f(z * (texC.x * f0 + texB.x * f1 + texA.x * f2),
                             z * (texC.y * f0 + texB.y * f1 + texA.y * f2));
+                    Vector3f pos = new Vector3f(z * (posC.x * f0 + posB.x * f1 + posA.x * f2),
+                            z * (posC.y * f0 + posB.y * f1 + posA.y * f2),
+                            z * (posC.z * f0 + posB.z * f1 + posA.z * f2));
+                    Vector3f norm = new Vector3f(z * (normC.x * f0 + normB.x * f1 + normA.x * f2),
+                            z * (normC.y * f0 + normB.y * f1 + normA.y * f2),
+                            z * (normC.z * f0 + normB.z * f1 + normA.z * f2)).normalize();
+
+                    Vector3f s = new Vector3f(l.getPositionEyeSpace().x - pos.x, l.getPositionEyeSpace().y - pos.y, l.getPositionEyeSpace().z - pos.z).normalize();
+                    float sDotN = s.dot(norm);
+                    if(sDotN < 0)sDotN = 0;
 
                     if(tex.x < 0) tex.x -= (int) tex.x - 1;
                     if(tex.y < 0) tex.y -= (int) tex.y - 1;
                     if(tex.x > 1) tex.x -= (int) tex.x;
                     if(tex.y > 1) tex.y -= (int) tex.y;
 
-                    float depth = (f0 * t.c.transformed.z + f1 * t.b.transformed.z + f2 * t.a.transformed.z);
+                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
                     if(m.getDiffuseTexture() == null || depth > 1 || depth < -1)continue;
-                    canvas.setPixel(p.x, p.y, m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), depth);
+                    canvas.setPixel(p.x, p.y, Color3f.mul(m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), sDotN).clamp(), depth);
                 }
 
                 // One step to the right
