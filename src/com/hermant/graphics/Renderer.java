@@ -162,6 +162,17 @@ public class Renderer {
 
                     Vector2f tex = new Vector2f(z * (texC.x * f0 + texB.x * f1 + texA.x * f2),
                             z * (texC.y * f0 + texB.y * f1 + texA.y * f2));
+
+                    if(tex.x < 0) tex.x -= (int) tex.x - 1;
+                    if(tex.y < 0) tex.y -= (int) tex.y - 1;
+                    if(tex.x > 1) tex.x -= (int) tex.x;
+                    if(tex.y > 1) tex.y -= (int) tex.y;
+
+                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
+
+                    if(m.getDiffuseTexture() == null || depth > 1 || depth < -1)continue;
+                    if(m.getDiffuseTexture().getAlpha(tex.x, tex.y) < 0.75f) continue;
+
                     Vector3f pos = new Vector3f(z * (posC.x * f0 + posB.x * f1 + posA.x * f2),
                             z * (posC.y * f0 + posB.y * f1 + posA.y * f2),
                             z * (posC.z * f0 + posB.z * f1 + posA.z * f2));
@@ -173,13 +184,7 @@ public class Renderer {
                     float sDotN = s.dot(norm);
                     if(sDotN < 0)sDotN = 0;
 
-                    if(tex.x < 0) tex.x -= (int) tex.x - 1;
-                    if(tex.y < 0) tex.y -= (int) tex.y - 1;
-                    if(tex.x > 1) tex.x -= (int) tex.x;
-                    if(tex.y > 1) tex.y -= (int) tex.y;
 
-                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
-                    if(m.getDiffuseTexture() == null || depth > 1 || depth < -1)continue;
                     canvas.setPixel(p.x, p.y, Color3f.mul(m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), sDotN).clamp(), depth);
                 }
 

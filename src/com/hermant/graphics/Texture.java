@@ -13,6 +13,7 @@ public class Texture {
 
     private int width, height;
     private Color3f[] pixels;
+    private float[] alphas;
 
     public Texture(String path) throws IOException {
         ByteBuffer imageData = FileUtils.ioResourceToByteBuffer(path, 1024);
@@ -21,15 +22,19 @@ public class Texture {
             IntBuffer w = stack.mallocInt(1);
             IntBuffer h = stack.mallocInt(1);
             IntBuffer comp = stack.mallocInt(1);
-            decodedImage = stbi_load_from_memory(imageData, w, h, comp, 3);
+            decodedImage = stbi_load_from_memory(imageData, w, h, comp, 4);
             this.width = w.get();
             this.height = h.get();
         }
-        if (decodedImage ==null) throw new IOException();
+        if (decodedImage == null) throw new IOException();
 
         pixels = new Color3f[width * height];
-        for (int i = 0; i < width * height; i++)
-            pixels[i] = new Color3f(((decodedImage.get(3 * i) << 16) & 0xff0000) | ((decodedImage.get(3 * i + 1) << 8) & 0xff00) | ((decodedImage.get(3 * i + 2)) & 0xff));
+        alphas = new float[width * height];
+
+        for (int i = 0; i < width * height; i++){
+            pixels[i] = new Color3f(((decodedImage.get(4 * i) << 16) & 0xff0000) | ((decodedImage.get(4 * i + 1) << 8) & 0xff00) | ((decodedImage.get(4 * i + 2)) & 0xff));
+            alphas[i] = (decodedImage.get(4 * i + 3) & 0xff) / 255.0f;
+        }
     }
 
     public Texture(int width, int height, Color3f color){
@@ -44,7 +49,13 @@ public class Texture {
     public Color3f getSampleNearestNeighbor(float x, float y){
         int W = (int)(x * width);
         int H = (int)(y * height);
-        return get(W, H);
+        return getColor(W, H);
+    }
+
+    public float getAlpha(float x, float y){
+        int W = (int)(x * width);
+        int H = (int)(y * height);
+        return getAlpha(W, H);
     }
 
 //    public int getSampleBilinearInterpolation(float x, float y){
@@ -58,13 +69,19 @@ public class Texture {
 //                .getRGB();
 //    }
 
-    public Color3f get(int width, int height){
+    public Color3f getColor(int width, int height){
         width = Math.max(Math.min(width, this.width - 1), 0);
         height = Math.max(Math.min(height, this.height - 1), 0);
         return pixels[height * this.width + width];
     }
 
-    private void set(int width, int height, Color3f color){
+    public float getAlpha(int width, int height){
+        width = Math.max(Math.min(width, this.width - 1), 0);
+        height = Math.max(Math.min(height, this.height - 1), 0);
+        return alphas[height * this.width + width];
+    }
+
+    private void setColor(int width, int height, Color3f color){
         width = Math.max(Math.min(width, this.width - 1), 0);
         height = Math.max(Math.min(height, this.height - 1), 0);
         pixels[height * this.width + width] = color;
