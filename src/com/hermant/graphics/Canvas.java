@@ -13,9 +13,7 @@ public class Canvas extends JPanel implements ComponentListener {
     private int height;
     private BufferedImage image;
     private int[] pixels;
-    private int[] clear;
     private float[] depth;
-    private float[] clearDepth;
 
     public Canvas(int width, int height) {
         setSize(this.width = width, this.height = height);
@@ -26,12 +24,8 @@ public class Canvas extends JPanel implements ComponentListener {
     private void initBuffers() {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-        clear = new int[pixels.length];
         depth = new float[pixels.length];
-        clearDepth = new float[pixels.length];
-        Arrays.fill(clear, 0);
         Arrays.fill(depth, 1f);
-        Arrays.fill(clearDepth, 1f);
     }
 
     @Override
@@ -66,8 +60,8 @@ public class Canvas extends JPanel implements ComponentListener {
 
 
     public void clear(){
-        System.arraycopy(clear, 0, pixels, 0, pixels.length);
-        System.arraycopy(clearDepth, 0, depth, 0, depth.length);
+        Arrays.fill(pixels, 0);
+        Arrays.fill(depth, 1.0f);
     }
 
     @Override
