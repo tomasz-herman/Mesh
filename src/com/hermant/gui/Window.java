@@ -24,6 +24,10 @@ public class Window extends JFrame {
         setVisible(true);
         getContentPane().setBackground(Color.BLACK);
         layout.setDisplayFPS(this::setText);
+        addMouseListener(layout);
+        addMouseMotionListener(layout);
+        addKeyListener(layout);
+        addMouseWheelListener(layout);
     }
 
     public void setText(String text){
