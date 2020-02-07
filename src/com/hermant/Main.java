@@ -1,6 +1,8 @@
 package com.hermant;
 
 import com.hermant.graphics.*;
+import com.hermant.graphics.lights.LightSetup;
+import com.hermant.graphics.lights.PointLight;
 import com.hermant.gui.Window;
 import org.joml.Vector3f;
 
@@ -26,8 +28,10 @@ public class Main {
         window.setCanvas(canvas);
         window.pack();
         Renderer renderer = new Renderer(canvas);
+        LightSetup lights = new LightSetup();
+        lights.getPointLights().add(new PointLight(0, 100, 0));
         Scene scene = new Scene();
-        scene.setLight(new Light(0, 100, 0, true));
+        scene.setLightSetup(lights);
         scene.setGameObject(List.of(new GameObject(sponza, new Vector3f(0, -20, 0), new Vector3f(0,0,0), 0.3f)));
         scene.setCamera(new Camera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
         window.setScene(scene);

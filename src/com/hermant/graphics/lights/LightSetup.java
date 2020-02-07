@@ -1,5 +1,7 @@
 package com.hermant.graphics.lights;
 
+import org.joml.Matrix4f;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,5 +33,16 @@ public final class LightSetup {
 
     public List<SpotLight> getSpotLights() {
         return spotLights;
+    }
+
+    public void transform(Matrix4f viewMatrix) {
+        for (PointLight pointLight : pointLights) {
+            pointLight.calculatePositionEyeSpace(viewMatrix);
+        }
+        for (SpotLight spotLight : spotLights) {
+            spotLight.calculatePositionEyeSpace(viewMatrix);
+            spotLight.calculateDirectionEyeSpace(viewMatrix);
+        }
+        directionalLight.calculateDirectionEyeSpace(viewMatrix);
     }
 }

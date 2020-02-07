@@ -1,5 +1,6 @@
 package com.hermant.graphics;
 
+import com.hermant.graphics.lights.LightSetup;
 import org.joml.*;
 
 import java.lang.Math;
@@ -32,7 +33,7 @@ public class Renderer {
         List<GameObject> objects = scene.getGameObjects();
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, canvas.getWidth(), canvas.getHeight(), Z_NEAR, Z_FAR);
         Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
-        scene.getLight().calculatePositionEyeSpace(viewMatrix);
+        scene.getLightSetup().transform(viewMatrix);
         for (GameObject object : objects) {
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(object, viewMatrix);
             Matrix3f normalMatrix = transformation.getNormalMatrix(modelViewMatrix);
@@ -47,9 +48,9 @@ public class Renderer {
                     else
                         mesh.getVertices().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     if(mesh.getTriangles().size() > THREADS << 2)
-                        mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+                        mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLightSetup()));
                     else
-                        mesh.getTriangles().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+                        mesh.getTriangles().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLightSetup()));
                 });
             } else {
                 object.getModel().getMeshes().forEach(mesh -> {
@@ -60,9 +61,9 @@ public class Renderer {
                     else
                         mesh.getVertices().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
                     if(mesh.getTriangles().size() > THREADS << 2)
-                        mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+                        mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLightSetup()));
                     else
-                        mesh.getTriangles().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLight()));
+                        mesh.getTriangles().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLightSetup()));
                 });
             }
         }
@@ -71,10 +72,10 @@ public class Renderer {
 
     @FunctionalInterface
     public interface RenderFunction {
-        void render(Triangle t, Material m, Light l);
+        void render(Triangle t, Material m, LightSetup l);
     }
 
-    public void renderTriangleWireframe(Triangle t, Material m, Light l){
+    public void renderTriangleWireframe(Triangle t, Material m, LightSetup l){
         if(t.a.transformedPosition.z > -1 && t.b.transformedPosition.z > -1 && t.c.transformedPosition.z > -1 & t.a.transformedPosition.z < 1 && t.b.transformedPosition.z < 1 && t.c.transformedPosition.z < 1){
             drawLine(t.a.screen, t.b.screen);
             drawLine(t.c.screen, t.b.screen);
@@ -95,7 +96,7 @@ public class Renderer {
     }
 
 
-    public void renderTriangle(Triangle t, Material m, Light l){
+    public void renderTriangle(Triangle t, Material m, LightSetup l){
         Vector2i v0 = t.c.screen, v1 = t.b.screen, v2 = t.a.screen;
         if(v0.x < 0 || v1.x < 0 || v2.x < 0 || v0.y < 0 || v1.y < 0 || v2.y < 0 || v0.y > canvas.getHeight() || v1.y > canvas.getHeight() || v2.y > canvas.getHeight() || v0.x > canvas.getWidth() || v1.x > canvas.getWidth() || v2.x > canvas.getWidth())return;
         if(m.getDiffuseTexture() == null
@@ -184,7 +185,7 @@ public class Renderer {
                             z * (normC.y * f0 + normB.y * f1 + normA.y * f2),
                             z * (normC.z * f0 + normB.z * f1 + normA.z * f2)).normalize();
 
-                    Vector3f s = new Vector3f(l.getPositionEyeSpace().x - pos.x, l.getPositionEyeSpace().y - pos.y, l.getPositionEyeSpace().z - pos.z).normalize();
+                    Vector3f s = new Vector3f(l.getPointLights().get(0).getPositionEyeSpace().x - pos.x, l.getPointLights().get(0).getPositionEyeSpace().y - pos.y, l.getPointLights().get(0).getPositionEyeSpace().z - pos.z).normalize();
                     float sDotN = s.dot(norm);
                     if(sDotN < 0)sDotN = 0;
 

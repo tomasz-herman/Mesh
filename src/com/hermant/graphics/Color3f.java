@@ -5,6 +5,12 @@ import org.joml.Vector3f;
 public class Color3f {
     public float red, green, blue;
 
+    public Color3f(float grey) {
+        this.red = clamp(grey);
+        this.green = clamp(grey);
+        this.blue = clamp(grey);
+    }
+
     public Color3f(float red, float green, float blue){
         this.red = clamp(red);
         this.green = clamp(green);
