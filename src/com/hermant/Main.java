@@ -24,10 +24,7 @@ public class Main {
         }
         if (rock == null)System.exit(2);
         Window window = new Window("Mesh", DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        Canvas canvas = new Canvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        window.setCanvas(canvas);
         window.pack();
-        Renderer renderer = new Renderer(canvas);
         LightSetup lights = new LightSetup();
         PointLight pointLight = new PointLight(0, 100, 0);
         pointLight.setColor(new Color3f(255, 0, 0));
@@ -37,7 +34,6 @@ public class Main {
         scene.setGameObject(List.of(new GameObject(sponza, new Vector3f(0, -20, 0), new Vector3f(0,0,0), 0.3f)));
         scene.setCamera(new Camera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
         window.setScene(scene);
-        window.setRenderer(renderer);
         window.start();
     }
 

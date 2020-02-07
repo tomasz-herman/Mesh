@@ -2,25 +2,24 @@ package com.hermant.gui;
 
 import com.hermant.graphics.Camera;
 import com.hermant.graphics.Canvas;
+import com.hermant.graphics.Renderer;
 import com.hermant.graphics.Scene;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
-public class Layout implements MouseListener, MouseMotionListener, KeyListener, MouseWheelListener {
-
-    private JPanel canvas_panel;
+public class Engine implements MouseListener, MouseMotionListener, KeyListener, MouseWheelListener {
 
     private Scene scene;
-    private com.hermant.graphics.Renderer renderer;
+    private Renderer renderer;
     private Canvas canvas;
     private Consumer<String> displayFPS = System.out::println;
 
-    public Layout() {
-
+    public Engine(int width, int height) {
+        canvas = new Canvas(width, height);
+        renderer = new Renderer(canvas);
     }
 
     public void setDisplayFPS(Consumer<String> displayFPS) {
@@ -28,17 +27,7 @@ public class Layout implements MouseListener, MouseMotionListener, KeyListener, 
     }
 
     public void setScene(Scene scene){
-          this.scene = scene;
-    }
-
-    public void setRenderer(com.hermant.graphics.Renderer renderer){
-        this.renderer = renderer;
-    }
-
-    public void setCanvas(Canvas canvas){
-        this.canvas = canvas;
-        canvas_panel.setLayout(new GridLayout());
-        canvas_panel.add(canvas);
+        this.scene = scene;
     }
 
     public void start(){
@@ -106,8 +95,8 @@ public class Layout implements MouseListener, MouseMotionListener, KeyListener, 
         deltaY = 0;
     }
 
-    public JPanel getMainPanel() {
-        return canvas_panel;
+    public JPanel getCanvas() {
+        return canvas;
     }
 
     private boolean up = false;
