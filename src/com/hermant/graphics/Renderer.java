@@ -1,6 +1,7 @@
 package com.hermant.graphics;
 
 import com.hermant.graphics.lights.LightSetup;
+import com.hermant.graphics.lights.PointLight;
 import org.joml.*;
 
 import java.lang.Math;
@@ -185,12 +186,25 @@ public class Renderer {
                             z * (normC.y * f0 + normB.y * f1 + normA.y * f2),
                             z * (normC.z * f0 + normB.z * f1 + normA.z * f2)).normalize();
 
-                    Vector3f s = new Vector3f(l.getPointLights().get(0).getPositionEyeSpace().x - pos.x, l.getPointLights().get(0).getPositionEyeSpace().y - pos.y, l.getPointLights().get(0).getPositionEyeSpace().z - pos.z).normalize();
+                    Color3f light = new Color3f(l.getAmbientLight().getColor());
+
+                    for (PointLight pointLight : l.getPointLights()) {
+                        Vector3f s = new Vector3f(pointLight.getPositionEyeSpace().x - pos.x, pointLight.getPositionEyeSpace().y - pos.y, pointLight.getPositionEyeSpace().z - pos.z).normalize();
+                        float sDotN = s.dot(norm);
+                        if(sDotN < 0)sDotN = 0;
+                        light.red += pointLight.getColor().red * sDotN;
+                        light.green += pointLight.getColor().green * sDotN;
+                        light.blue += pointLight.getColor().blue * sDotN;
+                    }
+
+                    Vector3f s = new Vector3f(l.getDirectionalLight().getDirectionEyeSpace().x, l.getDirectionalLight().getDirectionEyeSpace().y, l.getDirectionalLight().getDirectionEyeSpace().z).normalize();
                     float sDotN = s.dot(norm);
                     if(sDotN < 0)sDotN = 0;
+                    light.red += l.getDirectionalLight().getColor().red * sDotN;
+                    light.green += l.getDirectionalLight().getColor().green * sDotN;
+                    light.blue += l.getDirectionalLight().getColor().blue * sDotN;
 
-
-                    canvas.setPixel(p.x, p.y, Color3f.mul(m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), sDotN).clamp(), depth);
+                    canvas.setPixel(p.x, p.y, Color3f.mul(m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), light).clamp(), depth);
                 }
 
                 // One step to the right

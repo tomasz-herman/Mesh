@@ -29,7 +29,9 @@ public class Main {
         window.pack();
         Renderer renderer = new Renderer(canvas);
         LightSetup lights = new LightSetup();
-        lights.getPointLights().add(new PointLight(0, 100, 0));
+        PointLight pointLight = new PointLight(0, 100, 0);
+        pointLight.setColor(new Color3f(255, 0, 0));
+        lights.getPointLights().add(pointLight);
         Scene scene = new Scene();
         scene.setLightSetup(lights);
         scene.setGameObject(List.of(new GameObject(sponza, new Vector3f(0, -20, 0), new Vector3f(0,0,0), 0.3f)));

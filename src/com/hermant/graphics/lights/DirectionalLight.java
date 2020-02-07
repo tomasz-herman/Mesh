@@ -3,13 +3,13 @@ package com.hermant.graphics.lights;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-public class DirectionalLight {
+public class DirectionalLight extends Light{
     private Vector4f direction;
     private Vector4f directionEyeSpace;
 
     public DirectionalLight(){
         super();
-        this.direction = new Vector4f(0, -1, 0, 0.0f).normalize();
+        this.direction = new Vector4f(0, 1, 0, 0.0f).normalize();
         this.directionEyeSpace = new Vector4f();
     }
 
