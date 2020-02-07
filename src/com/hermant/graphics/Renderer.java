@@ -23,7 +23,7 @@ public class Renderer {
         this.renderFunction = renderFunction;
     }
 
-    private RenderFunction renderFunction = this::renderTriangle;
+    private RenderFunction renderFunction = this::renderTrianglePhong;
 
     public Renderer(Canvas canvas) {
         this.canvas = canvas;
@@ -97,7 +97,7 @@ public class Renderer {
     }
 
 
-    public void renderTriangle(Triangle t, Material m, LightSetup l){
+    public void renderTrianglePhong(Triangle t, Material m, LightSetup l){
         Vector2i v0 = t.c.screen, v1 = t.b.screen, v2 = t.a.screen;
         if(v0.x < 0 || v1.x < 0 || v2.x < 0 || v0.y < 0 || v1.y < 0 || v2.y < 0 || v0.y > canvas.getHeight() || v1.y > canvas.getHeight() || v2.y > canvas.getHeight() || v0.x > canvas.getWidth() || v1.x > canvas.getWidth() || v2.x > canvas.getWidth())return;
         if(m.getDiffuseTexture() == null
