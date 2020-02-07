@@ -98,6 +98,10 @@ public class Renderer {
     public void renderTriangle(Triangle t, Material m, Light l){
         Vector2i v0 = t.c.screen, v1 = t.b.screen, v2 = t.a.screen;
         if(v0.x < 0 || v1.x < 0 || v2.x < 0 || v0.y < 0 || v1.y < 0 || v2.y < 0 || v0.y > canvas.getHeight() || v1.y > canvas.getHeight() || v2.y > canvas.getHeight() || v0.x > canvas.getWidth() || v1.x > canvas.getWidth() || v2.x > canvas.getWidth())return;
+        if(m.getDiffuseTexture() == null
+                || t.a.transformedPosition.z > 1 || t.a.transformedPosition.z < -1
+                || t.b.transformedPosition.z > 1 || t.b.transformedPosition.z < -1
+                || t.c.transformedPosition.z > 1 || t.c.transformedPosition.z < -1) return;
         int minX = min(v0.x, v1.x, v2.x);
         int minY = min(v0.y, v1.y, v2.y);
         int maxX = max(v0.x, v1.x, v2.x);
@@ -170,7 +174,7 @@ public class Renderer {
 
                     float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
 
-                    if(m.getDiffuseTexture() == null || depth > 1 || depth < -1)continue;
+                    if(depth > 1 || depth < -1)continue;
                     if(m.getDiffuseTexture().getAlpha(tex.x, tex.y) < 0.75f) continue;
 
                     Vector3f pos = new Vector3f(z * (posC.x * f0 + posB.x * f1 + posA.x * f2),
