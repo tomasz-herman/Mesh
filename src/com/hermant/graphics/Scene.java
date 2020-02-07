@@ -1,11 +1,14 @@
 package com.hermant.graphics;
 
+import com.hermant.graphics.lights.LightSetup;
+
 import java.util.List;
 
 public class Scene {
 
     private List<GameObject> objects;
     private Light light;
+    private LightSetup lightSetup;
     private Camera camera;
 
     public Camera getCamera() {
@@ -30,5 +33,13 @@ public class Scene {
 
     public void setLight(Light light) {
         this.light = light;
+    }
+
+    public LightSetup getLightSetup() {
+        return lightSetup;
+    }
+
+    public void setLightSetup(LightSetup lightSetup) {
+        this.lightSetup = lightSetup;
     }
 }

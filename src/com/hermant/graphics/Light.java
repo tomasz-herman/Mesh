@@ -3,6 +3,7 @@ package com.hermant.graphics;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
+@Deprecated
 public class Light {
     private Color3f color;
     private Vector4f position;
