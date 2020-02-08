@@ -3,12 +3,12 @@ package com.hermant.graphics.lights;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-public class SpotLight {
+public class SpotLight extends Light {
     private Vector4f direction;
     private Vector4f directionEyeSpace;
     private Vector4f position;
     private Vector4f positionEyeSpace;
-    private float angle;
+    private float cutOff, outerCutOff, epsilon;
 
     public SpotLight(){
         super();
@@ -16,16 +16,19 @@ public class SpotLight {
         this.directionEyeSpace = new Vector4f();
         this.position = new Vector4f(0, 0, 0, 1.0f);
         this.positionEyeSpace = new Vector4f();
-        this.angle = 0;
+        this.cutOff = this.outerCutOff = 0;
+        this.epsilon = 0;
     }
 
-    public SpotLight(float xPos, float yPos, float zPos, float xDir, float yDir, float zDir, float angle){
+    public SpotLight(float xPos, float yPos, float zPos, float xDir, float yDir, float zDir, float cutOff, float outerCutOff){
         super();
         this.direction = new Vector4f(xDir, yDir, zDir, 0.0f).normalize();
         this.directionEyeSpace = new Vector4f();
         this.position = new Vector4f(xPos, yPos, zPos, 1.0f);
         this.positionEyeSpace = new Vector4f();
-        this.angle = angle;
+        this.outerCutOff = outerCutOff;
+        this.cutOff = cutOff;
+        this.epsilon = cutOff - outerCutOff;
     }
 
     public Vector4f getDirection() {
@@ -60,11 +63,25 @@ public class SpotLight {
         this.position = new Vector4f(x, y, z, position.w);
     }
 
-    public float getAngle() {
-        return angle;
+    public float getCutOff() {
+        return cutOff;
     }
 
-    public void setAngle(float angle) {
-        this.angle = angle;
+    public void setCutOff(float cutOff) {
+        this.cutOff = cutOff;
+        this.epsilon = cutOff - outerCutOff;
+    }
+
+    public float getOuterCutOff() {
+        return outerCutOff;
+    }
+
+    public void setOuterCutOff(float outerCutOff) {
+        this.outerCutOff = outerCutOff;
+        this.epsilon = cutOff - outerCutOff;
+    }
+
+    public float getEpsilon() {
+        return epsilon;
     }
 }

@@ -2,6 +2,7 @@ package com.hermant.graphics;
 
 import com.hermant.graphics.lights.LightSetup;
 import com.hermant.graphics.lights.PointLight;
+import com.hermant.graphics.lights.SpotLight;
 import org.joml.*;
 
 import java.lang.Math;
@@ -184,6 +185,17 @@ public class Renderer {
                         light.red += pointLight.getColor().red * sDotN;
                         light.green += pointLight.getColor().green * sDotN;
                         light.blue += pointLight.getColor().blue * sDotN;
+                    }
+
+                    for (SpotLight spotLight : l.getSpotLights()) {
+                        Vector3f s = new Vector3f(spotLight.getPositionEyeSpace().x - pos.x, spotLight.getPositionEyeSpace().y - pos.y, spotLight.getPositionEyeSpace().z - pos.z).normalize();
+                        float sDotN = s.dot(norm);
+                        if(sDotN < 0)sDotN = 0;
+                        float theta = s.dot(spotLight.getDirectionEyeSpace().x, spotLight.getDirectionEyeSpace().y, spotLight.getDirectionEyeSpace().z);
+                        theta = clamp((theta - spotLight.getOuterCutOff()) / spotLight.getEpsilon()) * sDotN;
+                        light.red += spotLight.getColor().red * theta;
+                        light.green += spotLight.getColor().green * theta;
+                        light.blue += spotLight.getColor().blue * theta;
                     }
 
                     Vector3f s = new Vector3f(l.getDirectionalLight().getDirectionEyeSpace().x, l.getDirectionalLight().getDirectionEyeSpace().y, l.getDirectionalLight().getDirectionEyeSpace().z).normalize();

@@ -26,4 +26,8 @@ public class MathUtils {
         return (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*((c.x-a.x));
     }
 
+    public static float clamp(float x){
+        return Math.max( Math.min(x, 1.0f), 0.0f);
+    }
+
 }
