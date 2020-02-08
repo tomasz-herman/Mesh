@@ -7,6 +7,8 @@ import org.joml.*;
 import java.lang.Math;
 import java.util.List;
 
+import static com.hermant.utils.MathUtils.*;
+
 public class Renderer {
 
     private static final float FOV = (float) Math.toRadians(60.0f);
@@ -83,19 +85,6 @@ public class Renderer {
             drawLine(t.a.screen, t.c.screen);
         }
     }
-
-    private static int orientation(Vector2i a, Vector2i b, Vector2i c) {
-        return (b.x-a.x)*(c.y-a.y) - (b.y-a.y)*((c.x-a.x));
-    }
-
-    private static int min(int a, int b, int c){
-        return Math.min(a, Math.min(b, c));
-    }
-
-    private static int max(int a, int b, int c){
-        return Math.max(a, Math.max(b, c));
-    }
-
 
     public void renderTrianglePhong(Triangle t, Material m, LightSetup l){
         Vector2i v0 = t.c.screen, v1 = t.b.screen, v2 = t.a.screen;
@@ -296,15 +285,4 @@ public class Renderer {
             }
         }
     }
-
-    private static float pow(float a, int b){
-        float result = 1.0f;
-        while(b > 0){
-            if((b & 1) == 1) result *= a;
-            b = b >> 1;
-            a *= a;
-        }
-        return result;
-    }
-
 }
