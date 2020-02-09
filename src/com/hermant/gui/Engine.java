@@ -174,16 +174,16 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
             up = false;
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_1){
-            renderer.setRenderFunction(renderer::renderTrianglePhong);
+            renderer.setRenderFunction(renderer::renderTriangleWireframe);
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_2){
-            renderer.setRenderFunction(renderer::renderTriangleWireframe);
+            renderer.setRenderFunction(renderer::renderTriangleGouraud);
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_3){
-            renderer.setRenderFunction(renderer::renderTriangleWireframe);
+            renderer.setRenderFunction(renderer::renderTrianglePhong);
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_4){
-            renderer.setRenderFunction(renderer::renderTriangleWireframe);
+            renderer.setRenderFunction(renderer::renderTrianglePhong);
         }
     }
 

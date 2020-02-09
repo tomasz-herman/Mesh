@@ -30,12 +30,12 @@ public class Main {
         PointLight pointLight = new PointLight(0, 100, 0);
         pointLight.setColor(new Color3f(255, 0, 0));
         lights.getPointLights().add(pointLight);
-        SpotLight spotLight = new SpotLight(0, 100, 0, 0, 0, 1, 0.9f, 0.81f);
+        SpotLight spotLight = new SpotLight(0, 100, 0, 1, 0, 0, 0.99f, 0.98f);
         spotLight.setColor(new Color3f(0, 255, 255));
         lights.getSpotLights().add(spotLight);
         Scene scene = new Scene();
         scene.setLightSetup(lights);
-        scene.setGameObject(List.of(new GameObject(sponza, new Vector3f(0, -20, 0), new Vector3f(0,0,0), 0.3f)));
+        scene.setGameObject(List.of(new GameObject(sponza, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 0.3f)));
         scene.setCamera(new Camera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
         window.setScene(scene);
         window.start();
