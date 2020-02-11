@@ -41,7 +41,7 @@ public class Main {
                 List.of(
                         new GameObject(sponza, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 0.3f),
                         new GameObject(table, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 33.3f),
-                        new GameObject(rock, new Vector3f(0, 50.0f, 0), new Vector3f(0,0,0), 4.0f)
+                        new GameObject(rock, new Vector3f(33.3f, 50.0f, 0), new Vector3f(0,0,0), 4.0f)
                 ));
         scene.setCamera(new Camera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
         window.setScene(scene);

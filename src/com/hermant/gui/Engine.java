@@ -4,6 +4,7 @@ import com.hermant.graphics.Camera;
 import com.hermant.graphics.Canvas;
 import com.hermant.graphics.Renderer;
 import com.hermant.graphics.Scene;
+import org.joml.Vector4f;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -69,6 +70,21 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
 
     private void update(float delta){
         if(scene == null) return;
+
+        var stone = scene.getGameObjects().get(2);
+        var position = stone.getPosition();
+        position.rotateAxis(delta, 0, 1, 0);
+
+        var spotlight = scene.getLightSetup().getSpotLights().get(0);
+        var direction = spotlight.getDirection();
+        var lightPosition = spotlight.getPosition();
+        var newDirection = new Vector4f(
+                lightPosition.x - position.x,
+                lightPosition.y - position.y,
+                lightPosition.z - position.z,
+                0.0f).normalize();
+        direction.set(newDirection);
+
         float move = delta * 100;
         Camera camera = scene.getCamera();
         if(up){
