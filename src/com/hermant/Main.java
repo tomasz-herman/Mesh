@@ -32,7 +32,7 @@ public class Main {
         PointLight pointLight = new PointLight(0, 100, 0);
         pointLight.setColor(new Color3f(255, 0, 0));
         lights.getPointLights().add(pointLight);
-        SpotLight spotLight = new SpotLight(0, 100, 0, 0, 1, 0, 0.99f, 0.98f);
+        SpotLight spotLight = new SpotLight(0, 100, 0, 0, 1, 0, 0.98f, 0.95f);
         spotLight.setColor(new Color3f(0, 255, 255));
         lights.getSpotLights().add(spotLight);
         Scene scene = new Scene();
