@@ -12,27 +12,27 @@ public class Color3f {
     }
 
     public Color3f(float grey) {
-        this.red = clamp(grey);
-        this.green = clamp(grey);
-        this.blue = clamp(grey);
+        this.red = grey;
+        this.green = grey;
+        this.blue = grey;
     }
 
     public Color3f(float red, float green, float blue){
-        this.red = clamp(red);
-        this.green = clamp(green);
-        this.blue = clamp(blue);
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     }
 
     public Color3f(int red, int green, int blue){
-        this.red = clamp(red / 255.0f);
-        this.green = clamp(green / 255.0f);
-        this.blue = clamp(blue / 255.0f);
+        this.red = red / 255.0f;
+        this.green = green / 255.0f;
+        this.blue = blue / 255.0f;
     }
 
     public Color3f(int rgb){
-        this.red = clamp(((rgb >> 16) & 0xff) / 255.0f);
-        this.green = clamp(((rgb >> 8) & 0xff) / 255.0f);
-        this.blue = clamp((rgb & 0xff) / 255.0f);
+        this.red = ((rgb >> 16) & 0xff) / 255.0f;
+        this.green = ((rgb >> 8) & 0xff) / 255.0f;
+        this.blue = (rgb & 0xff) / 255.0f;
     }
 
     public Color3f(Color3f other) {
