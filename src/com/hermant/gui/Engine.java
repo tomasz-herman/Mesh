@@ -106,6 +106,12 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
         if(backward){
             camera.move(0, 0, move);
         }
+        if(roll){
+            camera.rotate(0, 0, -delta * 20);
+        }
+        if(llor){
+            camera.rotate(0, 0, delta * 20);
+        }
         camera.rotate(deltaY * delta * 20, 0, 0);
         camera.rotate(0, deltaX * delta * 20, 0);
         deltaX = 0;
@@ -122,6 +128,8 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
     private boolean right = false;
     private boolean forward = false;
     private boolean backward = false;
+    private boolean roll = false;
+    private boolean llor = false;
 
     private int mouseX;
     private int mouseY;
@@ -168,6 +176,13 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
         else if(keyEvent.getKeyCode() == KeyEvent.VK_E){
             up = true;
         }
+        else if(keyEvent.getKeyCode() == KeyEvent.VK_Z){
+            roll = true;
+        }
+        else if(keyEvent.getKeyCode() == KeyEvent.VK_X){
+            llor = true;
+        }
+
     }
 
     @Override
@@ -189,6 +204,12 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_E){
             up = false;
+        }
+        else if(keyEvent.getKeyCode() == KeyEvent.VK_Z){
+            roll = false;
+        }
+        else if(keyEvent.getKeyCode() == KeyEvent.VK_X){
+            llor = false;
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_1){
             renderer.setRenderFunction(renderer::renderTriangleWireframe);
