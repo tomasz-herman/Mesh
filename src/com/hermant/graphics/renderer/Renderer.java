@@ -87,9 +87,14 @@ public class Renderer {
 
     public void renderTriangleWireframe(Triangle t, Material m, LightSetup l){
         if(t.a.transformedPosition.z > -1 && t.b.transformedPosition.z > -1 && t.c.transformedPosition.z > -1 & t.a.transformedPosition.z < 1 && t.b.transformedPosition.z < 1 && t.c.transformedPosition.z < 1){
-            drawLine(t.a.screen, t.b.screen);
-            drawLine(t.c.screen, t.b.screen);
-            drawLine(t.a.screen, t.c.screen);
+            int color;
+            if(m.hasDiffuseTexture())
+                color = m.getDiffuseTexture().getMedium();
+            else color = 0xffffffff;
+            float depth = 0.3333f * (t.a.transformedPosition.z + t.b.transformedPosition.z + t.c.transformedPosition.z);
+            drawLine(t.a.screen, t.b.screen, color, depth);
+            drawLine(t.c.screen, t.b.screen, color, depth);
+            drawLine(t.a.screen, t.c.screen, color, depth);
         }
     }
 
@@ -838,7 +843,7 @@ public class Renderer {
         }
     }
 
-    private void drawLine(Vector2i p1, Vector2i p2){
+    private void drawLine(Vector2i p1, Vector2i p2, int color, float depth){
         int d, dx, dy, ai, bi, xi, yi;
         int x = p1.x, y = p1.y, x2 = p2.x, y2 = p2.y;
         int x1 = x, y1 = y;
@@ -865,7 +870,7 @@ public class Renderer {
             dy = y1 - y2;
         }
         // pierwszy piksel
-        canvas.setPixel(x, y, 0xffffffff);
+        canvas.setPixelSafe(x, y, color, depth);
         // oś wiodąca OX
         if (dx > dy)
         {
@@ -887,7 +892,7 @@ public class Renderer {
                     d += bi;
                     x += xi;
                 }
-                canvas.setPixel(x, y, 0xffffffff);
+                canvas.setPixelSafe(x, y, color, depth);
             }
         }
         // oś wiodąca OY
@@ -911,7 +916,7 @@ public class Renderer {
                     d += bi;
                     y += yi;
                 }
-                canvas.setPixel(x, y, 0xffffffff);
+                canvas.setPixelSafe(x, y, color, depth);
             }
         }
     }

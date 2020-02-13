@@ -15,6 +15,7 @@ public class Texture {
     private int width, height;
     private Color3f[] pixels;
     private float[] alphas;
+    private int medium;
 
     public Texture(String path) throws IOException {
         ByteBuffer imageData = FileUtils.ioResourceToByteBuffer(path, 1024);
@@ -31,11 +32,15 @@ public class Texture {
 
         pixels = new Color3f[width * height];
         alphas = new float[width * height];
+        Color3f medium = new Color3f();
 
         for (int i = 0; i < width * height; i++){
             pixels[i] = new Color3f(((decodedImage.get(4 * i) << 16) & 0xff0000) | ((decodedImage.get(4 * i + 1) << 8) & 0xff00) | ((decodedImage.get(4 * i + 2)) & 0xff));
+            medium.add(pixels[i]);
             alphas[i] = (decodedImage.get(4 * i + 3) & 0xff) / 255.0f;
         }
+        medium.div(width * height).clamp();
+        this.medium = medium.getRGB();
     }
 
     public Texture(int width, int height, Color3f color){
@@ -105,4 +110,9 @@ public class Texture {
 //        }
 //        return result;
 //    }
+
+
+    public int getMedium() {
+        return medium;
+    }
 }

@@ -68,6 +68,20 @@ public class Canvas extends JPanel implements ComponentListener {
         pixels[y * width + x] = color;
     }
 
+    public void setPixelSafe(int x, int y, Color3f color, float depth){
+        if(x >= width || x < 0 || y >= height || y < 0) return;
+        if(depth > this.depth[y * width + x]) return;
+        else this.depth[y * width + x] = depth;
+        pixels[y * width + x] = color.getRGB();
+    }
+
+    public void setPixelSafe(int x, int y, int color, float depth){
+        if(x >= width || x < 0 || y >= height || y < 0) return;
+        if(depth > this.depth[y * width + x]) return;
+        else this.depth[y * width + x] = depth;
+        pixels[y * width + x] = color;
+    }
+
     public void setInfo(String info) {
         this.info = info;
     }
