@@ -1,6 +1,9 @@
 package com.hermant;
 
 import com.hermant.graphics.*;
+import com.hermant.graphics.cameras.FirstPersonCamera;
+import com.hermant.graphics.cameras.FollowingCamera;
+import com.hermant.graphics.cameras.ThirdPersonCamera;
 import com.hermant.graphics.lights.LightSetup;
 import com.hermant.graphics.lights.PointLight;
 import com.hermant.graphics.lights.SpotLight;
@@ -41,9 +44,11 @@ public class Main {
                 List.of(
                         new GameObject(sponza, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 0.3f),
                         new GameObject(table, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 33.3f),
-                        new GameObject(rock, new Vector3f(33.3f, 50.0f, 0), new Vector3f(0,0,0), 4.0f)
+                        new GameObject(rock, new Vector3f(33.3f, 50.0f, 0), new Vector3f(0,-90,0), 4.0f)
                 ));
-        scene.setCamera(new Camera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
+        scene.setCamera(new FirstPersonCamera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
+        scene.setCamera(new FollowingCamera(new Vector3f(40, 60, 0), scene.getGameObjects().get(2)));
+        scene.setCamera(new ThirdPersonCamera(scene.getGameObjects().get(2), 25));
         window.setScene(scene);
         window.start();
     }

@@ -1,9 +1,9 @@
 package com.hermant.gui;
 
-import com.hermant.graphics.Camera;
 import com.hermant.graphics.Canvas;
 import com.hermant.graphics.Renderer;
 import com.hermant.graphics.Scene;
+import com.hermant.graphics.cameras.Camera;
 import org.joml.Vector4f;
 
 import javax.swing.*;
@@ -74,6 +74,7 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
         var stone = scene.getGameObjects().get(2);
         var position = stone.getPosition();
         position.rotateAxis(delta, 0, 1, 0);
+        stone.setRotation(stone.getRotation().x, stone.getRotation().y - (float)Math.toDegrees(delta), stone.getRotation().z);
 
         var spotlight = scene.getLightSetup().getSpotLights().get(0);
         var direction = spotlight.getDirection();

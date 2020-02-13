@@ -1,5 +1,6 @@
 package com.hermant.graphics;
 
+import com.hermant.graphics.cameras.Camera;
 import com.hermant.graphics.lights.LightSetup;
 
 import java.util.List;

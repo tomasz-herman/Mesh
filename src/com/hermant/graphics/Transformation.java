@@ -1,5 +1,6 @@
 package com.hermant.graphics;
 
+import com.hermant.graphics.cameras.Camera;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -19,13 +20,9 @@ public class Transformation {
         projectionMatrix = new Matrix4f();
         viewMatrix = new Matrix4f();
         modelMatrix = new Matrix4f();
-
         normalMatrix  = new Matrix3f();
-
         modelViewMatrix = new Matrix4f();
-
         modelViewProjectionMatrix = new Matrix4f();
-
     }
 
 
@@ -37,15 +34,7 @@ public class Transformation {
     }
 
     public Matrix4f getViewMatrix(Camera camera) {
-        Vector3f cameraPos = camera.getPosition();
-        Vector3f rotation = camera.getRotation();
-        viewMatrix.identity();
-        // First do the rotation so camera rotates over its position
-        viewMatrix.rotate((float)Math.toRadians(rotation.x), new Vector3f(1, 0, 0))
-                .rotate((float)Math.toRadians(rotation.y), new Vector3f(0, 1, 0));
-        // Then do the translation
-        viewMatrix.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-        return viewMatrix;
+        return camera.setupViewMatrix(viewMatrix);
     }
 
     public Matrix4f getModelMatrix(GameObject gameObject) {
