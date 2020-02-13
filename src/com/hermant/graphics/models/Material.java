@@ -1,4 +1,6 @@
-package com.hermant.graphics;
+package com.hermant.graphics.models;
+
+import com.hermant.graphics.utils.Color3f;
 
 public class Material {
     public static final Color3f DEFAULT_COLOUR = new Color3f(1.0f, 1.0f, 1.0f);

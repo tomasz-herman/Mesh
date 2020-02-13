@@ -1,5 +1,6 @@
-package com.hermant.graphics;
+package com.hermant.graphics.scene;
 
+import com.hermant.graphics.models.Model;
 import org.joml.Vector3f;
 
 public class GameObject {

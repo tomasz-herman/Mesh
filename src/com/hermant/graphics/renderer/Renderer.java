@@ -1,8 +1,14 @@
-package com.hermant.graphics;
+package com.hermant.graphics.renderer;
 
-import com.hermant.graphics.lights.LightSetup;
 import com.hermant.graphics.lights.PointLight;
 import com.hermant.graphics.lights.SpotLight;
+import com.hermant.graphics.models.Material;
+import com.hermant.graphics.models.Triangle;
+import com.hermant.graphics.scene.GameObject;
+import com.hermant.graphics.scene.LightSetup;
+import com.hermant.graphics.scene.Scene;
+import com.hermant.graphics.utils.Color3f;
+import com.hermant.graphics.utils.Transformation;
 import org.joml.*;
 
 import java.lang.Math;

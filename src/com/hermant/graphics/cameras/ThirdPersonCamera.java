@@ -1,6 +1,6 @@
 package com.hermant.graphics.cameras;
 
-import com.hermant.graphics.GameObject;
+import com.hermant.graphics.scene.GameObject;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

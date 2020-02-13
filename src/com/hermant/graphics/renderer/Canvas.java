@@ -1,4 +1,6 @@
-package com.hermant.graphics;
+package com.hermant.graphics.renderer;
+
+import com.hermant.graphics.utils.Color3f;
 
 import javax.swing.*;
 import java.awt.*;

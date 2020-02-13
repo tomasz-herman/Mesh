@@ -1,4 +1,6 @@
-package com.hermant.graphics;
+package com.hermant.graphics.utils;
+
+import com.hermant.graphics.models.Texture;
 
 import java.io.IOException;
 import java.util.HashMap;

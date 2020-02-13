@@ -1,12 +1,16 @@
 package com.hermant;
 
-import com.hermant.graphics.*;
 import com.hermant.graphics.cameras.FirstPersonCamera;
 import com.hermant.graphics.cameras.FollowingCamera;
 import com.hermant.graphics.cameras.ThirdPersonCamera;
-import com.hermant.graphics.lights.LightSetup;
 import com.hermant.graphics.lights.PointLight;
 import com.hermant.graphics.lights.SpotLight;
+import com.hermant.graphics.models.Model;
+import com.hermant.graphics.scene.GameObject;
+import com.hermant.graphics.scene.LightSetup;
+import com.hermant.graphics.scene.Scene;
+import com.hermant.graphics.utils.Color3f;
+import com.hermant.graphics.utils.ModelLoader;
 import com.hermant.gui.Window;
 import org.joml.Vector3f;
 

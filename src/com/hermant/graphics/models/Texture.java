@@ -1,5 +1,6 @@
-package com.hermant.graphics;
+package com.hermant.graphics.models;
 
+import com.hermant.graphics.utils.Color3f;
 import com.hermant.utils.FileUtils;
 import org.lwjgl.system.MemoryStack;
 

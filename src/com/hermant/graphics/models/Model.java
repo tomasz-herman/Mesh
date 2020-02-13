@@ -1,4 +1,4 @@
-package com.hermant.graphics;
+package com.hermant.graphics.models;
 
 import java.util.List;
 

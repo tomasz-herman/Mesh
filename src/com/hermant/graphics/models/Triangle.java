@@ -1,4 +1,4 @@
-package com.hermant.graphics;
+package com.hermant.graphics.models;
 
 public class Triangle {
     public Vertex a, b, c;

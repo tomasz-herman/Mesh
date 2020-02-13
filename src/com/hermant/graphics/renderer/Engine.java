@@ -1,9 +1,7 @@
-package com.hermant.gui;
+package com.hermant.graphics.renderer;
 
-import com.hermant.graphics.Canvas;
-import com.hermant.graphics.Renderer;
-import com.hermant.graphics.Scene;
 import com.hermant.graphics.cameras.Camera;
+import com.hermant.graphics.scene.Scene;
 import org.joml.Vector4f;
 
 import javax.swing.*;

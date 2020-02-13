@@ -1,5 +1,9 @@
-package com.hermant.graphics.lights;
+package com.hermant.graphics.scene;
 
+import com.hermant.graphics.lights.AmbientLight;
+import com.hermant.graphics.lights.DirectionalLight;
+import com.hermant.graphics.lights.PointLight;
+import com.hermant.graphics.lights.SpotLight;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;

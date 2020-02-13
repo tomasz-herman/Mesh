@@ -1,5 +1,8 @@
 package com.hermant.gui;
 
+import com.hermant.graphics.renderer.Engine;
+import com.hermant.graphics.scene.Scene;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -42,7 +45,7 @@ public class Window extends JFrame implements KeyListener {
         setTitle(title + " " + text);
     }
 
-    public void setScene(com.hermant.graphics.Scene scene){
+    public void setScene(Scene scene){
         engine.setScene(scene);
     }
 

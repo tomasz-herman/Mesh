@@ -1,4 +1,4 @@
-package com.hermant.graphics;
+package com.hermant.graphics.utils;
 
 import org.joml.Vector3f;
 
