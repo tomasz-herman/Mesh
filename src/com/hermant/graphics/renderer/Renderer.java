@@ -148,13 +148,18 @@ public class Renderer {
             int w0 = w0_row;
             int w1 = w1_row;
             int w2 = w2_row;
-            for (p.x = minX; p.x <= maxX; p.x++) {
+            for (p.x = minX; p.x <= maxX; p.x++, w0 += A12, w1 += A20, w2 += A01) {
 
                 // If p is on or inside all edges, render pixel.
                 if ((w0 | w1 | w2) >= 0){
                     float f0 = (float)w0 / area;
                     float f1 = (float)w1 / area;
                     float f2 = 1.0f - f0 - f1;
+
+                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
+
+                    if(depth > 1 || depth < -1)continue;
+                    if(canvas.testDepth(p.x, p.y, depth)) continue;
 
                     float z = 1 / (f0 * t.c.transformedPosition.w + f1 * t.b.transformedPosition.w + f2 * t.a.transformedPosition.w);
 
@@ -166,9 +171,6 @@ public class Renderer {
                     if(tex.x > 1) tex.x -= (int) tex.x;
                     if(tex.y > 1) tex.y -= (int) tex.y;
 
-                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
-
-                    if(depth > 1 || depth < -1)continue;
                     if(m.getDiffuseTexture().getAlpha(tex.x, tex.y) < 0.75f) continue;
 
                     Vector3f pos = new Vector3f(z * (posC.x * f0 + posB.x * f1 + posA.x * f2),
@@ -267,9 +269,6 @@ public class Renderer {
                 }
 
                 // One step to the right
-                w0 += A12;
-                w1 += A20;
-                w2 += A01;
             }
             // One row step
             w0_row += B12;
@@ -334,13 +333,18 @@ public class Renderer {
             int w0 = w0_row;
             int w1 = w1_row;
             int w2 = w2_row;
-            for (p.x = minX; p.x <= maxX; p.x++) {
+            for (p.x = minX; p.x <= maxX; p.x++, w0 += A12, w1 += A20, w2 += A01) {
 
                 // If p is on or inside all edges, render pixel.
                 if ((w0 | w1 | w2) >= 0){
                     float f0 = (float)w0 / area;
                     float f1 = (float)w1 / area;
                     float f2 = 1.0f - f0 - f1;
+
+                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
+
+                    if(depth > 1 || depth < -1)continue;
+                    if(canvas.testDepth(p.x, p.y, depth)) continue;
 
                     float z = 1 / (f0 * t.c.transformedPosition.w + f1 * t.b.transformedPosition.w + f2 * t.a.transformedPosition.w);
 
@@ -352,9 +356,6 @@ public class Renderer {
                     if(tex.x > 1) tex.x -= (int) tex.x;
                     if(tex.y > 1) tex.y -= (int) tex.y;
 
-                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
-
-                    if(depth > 1 || depth < -1)continue;
                     if(m.getDiffuseTexture().getAlpha(tex.x, tex.y) < 0.75f) continue;
 
                     Vector3f pos = new Vector3f(z * (posC.x * f0 + posB.x * f1 + posA.x * f2),
@@ -397,9 +398,6 @@ public class Renderer {
                 }
 
                 // One step to the right
-                w0 += A12;
-                w1 += A20;
-                w2 += A01;
             }
             // One row step
             w0_row += B12;
@@ -549,13 +547,18 @@ public class Renderer {
             int w0 = w0_row;
             int w1 = w1_row;
             int w2 = w2_row;
-            for (p.x = minX; p.x <= maxX; p.x++) {
+            for (p.x = minX; p.x <= maxX; p.x++, w0 += A12, w1 += A20, w2 += A01) {
 
                 // If p is on or inside all edges, render pixel.
                 if ((w0 | w1 | w2) >= 0) {
                     float f0 = (float) w0 / area;
                     float f1 = (float) w1 / area;
                     float f2 = 1.0f - f0 - f1;
+
+                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
+
+                    if (depth > 1 || depth < -1) continue;
+                    if(canvas.testDepth(p.x, p.y, depth)) continue;
 
                     float z = 1 / (f0 * t.c.transformedPosition.w + f1 * t.b.transformedPosition.w + f2 * t.a.transformedPosition.w);
 
@@ -567,9 +570,6 @@ public class Renderer {
                     if (tex.x > 1) tex.x -= (int) tex.x;
                     if (tex.y > 1) tex.y -= (int) tex.y;
 
-                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
-
-                    if (depth > 1 || depth < -1) continue;
                     if (m.getDiffuseTexture().getAlpha(tex.x, tex.y) < 0.75f) continue;
 
                     Color3f light = new Color3f(z * (lightC.red * f0 + lightB.red * f1 + lightA.red * f2),
@@ -579,9 +579,6 @@ public class Renderer {
                     canvas.setPixel(p.x, p.y, Color3f.mul(m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), light).clamp(), depth);
                 }
                 // One step to the right
-                w0 += A12;
-                w1 += A20;
-                w2 += A01;
             }
             // One row step
             w0_row += B12;
@@ -680,13 +677,18 @@ public class Renderer {
             int w0 = w0_row;
             int w1 = w1_row;
             int w2 = w2_row;
-            for (p.x = minX; p.x <= maxX; p.x++) {
+            for (p.x = minX; p.x <= maxX; p.x++, w0 += A12, w1 += A20, w2 += A01) {
 
                 // If p is on or inside all edges, render pixel.
                 if ((w0 | w1 | w2) >= 0){
                     float f0 = (float)w0 / area;
                     float f1 = (float)w1 / area;
                     float f2 = 1.0f - f0 - f1;
+
+                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
+
+                    if(depth > 1 || depth < -1)continue;
+                    if(canvas.testDepth(p.x, p.y, depth)) continue;
 
                     float z = 1 / (f0 * t.c.transformedPosition.w + f1 * t.b.transformedPosition.w + f2 * t.a.transformedPosition.w);
 
@@ -698,18 +700,12 @@ public class Renderer {
                     if(tex.x > 1) tex.x -= (int) tex.x;
                     if(tex.y > 1) tex.y -= (int) tex.y;
 
-                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
-
-                    if(depth > 1 || depth < -1)continue;
                     if(m.getDiffuseTexture().getAlpha(tex.x, tex.y) < 0.75f) continue;
 
                     canvas.setPixel(p.x, p.y, Color3f.mul(m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), light).clamp(), depth);
                 }
 
                 // One step to the right
-                w0 += A12;
-                w1 += A20;
-                w2 += A01;
             }
             // One row step
             w0_row += B12;
