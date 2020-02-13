@@ -3,20 +3,34 @@ package com.hermant.graphics;
 import com.hermant.graphics.cameras.Camera;
 import com.hermant.graphics.lights.LightSetup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Scene {
 
     private List<GameObject> objects;
     private LightSetup lightSetup;
+    private List<Camera> cameras = new ArrayList<>();
     private Camera camera;
+    private int cameraIndex;
 
     public Camera getCamera() {
         return camera;
     }
 
-    public void setCamera(Camera camera) {
-        this.camera = camera;
+    public void addCamera(Camera camera) {
+        if(this.camera == null){
+            this.camera = camera;
+            cameraIndex = 0;
+        }
+        cameras.add(camera);
+    }
+
+    public void changeCamera() {
+        if(cameras.isEmpty()) return;
+        cameraIndex++;
+        if(cameraIndex >= cameras.size()) cameraIndex = 0;
+        camera = cameras.get(cameraIndex);
     }
 
     public void setGameObject(List<GameObject> objects) {

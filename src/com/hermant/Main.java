@@ -46,9 +46,10 @@ public class Main {
                         new GameObject(table, new Vector3f(0, 0, 0), new Vector3f(0,0,0), 33.3f),
                         new GameObject(rock, new Vector3f(33.3f, 50.0f, 0), new Vector3f(0,-90,0), 4.0f)
                 ));
-        scene.setCamera(new FirstPersonCamera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
-        scene.setCamera(new FollowingCamera(new Vector3f(40, 60, 0), scene.getGameObjects().get(2)));
-        scene.setCamera(new ThirdPersonCamera(scene.getGameObjects().get(2), 25));
+        scene.addCamera(new FirstPersonCamera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
+        scene.addCamera(new FirstPersonCamera(new Vector3f(0, 20, 0), new Vector3f(0, 0f, 0)));
+        scene.addCamera(new FollowingCamera(new Vector3f(40, 60, 0), scene.getGameObjects().get(2)));
+        scene.addCamera(new ThirdPersonCamera(scene.getGameObjects().get(2), 25));
         window.setScene(scene);
         window.start();
     }
