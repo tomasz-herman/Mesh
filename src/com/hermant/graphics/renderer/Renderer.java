@@ -18,7 +18,7 @@ import static com.hermant.utils.MathUtils.*;
 
 public class Renderer {
 
-    private static final float FOV = (float) Math.toRadians(60.0f);
+    private float fov = (float) Math.toRadians(60.0f);
     private static final float Z_NEAR = 1f;
     private static final float Z_FAR = 1000.f;
 
@@ -41,7 +41,7 @@ public class Renderer {
     public void renderScene(Scene scene) {
         canvas.clear();
         List<GameObject> objects = scene.getGameObjects();
-        Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, canvas.getWidth(), canvas.getHeight(), Z_NEAR, Z_FAR);
+        Matrix4f projectionMatrix = transformation.getProjectionMatrix(fov, canvas.getWidth(), canvas.getHeight(), Z_NEAR, Z_FAR);
         Matrix4f viewMatrix = transformation.getViewMatrix(scene.getCamera());
         scene.getLightSetup().transform(viewMatrix);
         for (GameObject object : objects) {
@@ -916,5 +916,13 @@ public class Renderer {
                 canvas.setPixelSafe(x, y, color, depth);
             }
         }
+    }
+
+    public float getFov() {
+        return fov;
+    }
+
+    public void setFov(float fov) {
+        this.fov = fov;
     }
 }

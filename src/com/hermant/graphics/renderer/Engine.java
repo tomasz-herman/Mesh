@@ -269,6 +269,11 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-
+        int rotation = e.getWheelRotation();
+        float fov = renderer.getFov();
+        fov -= (float) Math.toRadians(rotation);
+        if(fov < (float) Math.toRadians(10f))fov = (float) Math.toRadians(10f);
+        if(fov > (float) Math.toRadians(175f))fov = (float) Math.toRadians(175f);
+        renderer.setFov(fov);
     }
 }
