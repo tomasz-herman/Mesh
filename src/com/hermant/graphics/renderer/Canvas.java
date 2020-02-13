@@ -16,6 +16,7 @@ public class Canvas extends JPanel implements ComponentListener {
     private BufferedImage image;
     private int[] pixels;
     private float[] depth;
+    private String info = "";
 
     public Canvas(int width, int height) {
         setSize(this.width = width, this.height = height);
@@ -34,6 +35,11 @@ public class Canvas extends JPanel implements ComponentListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(image, 0, 0, width, height, null);
+        Font currentFont = g.getFont();
+        Font newFont = currentFont.deriveFont(currentFont.getSize() * 2.0f);
+        g.setFont(newFont);
+        g.setColor(Color.white);
+        g.drawString(info, 4, 24);
     }
 
     public void setPixel(int x, int y, Color3f color){
@@ -60,6 +66,13 @@ public class Canvas extends JPanel implements ComponentListener {
         pixels[y * width + x] = color;
     }
 
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public void appendInfo(String info) {
+        this.info += info;
+    }
 
     public void clear(){
         Arrays.fill(pixels, 0);

@@ -33,7 +33,6 @@ public class Window extends JFrame implements KeyListener {
         setLocationRelativeTo(null);
         setVisible(true);
         getContentPane().setBackground(Color.BLACK);
-        engine.setDisplayFPS(this::setText);
         addMouseListener(engine);
         addMouseMotionListener(engine);
         addKeyListener(engine);

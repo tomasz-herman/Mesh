@@ -19,6 +19,7 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
     public Engine(int width, int height) {
         canvas = new Canvas(width, height);
         renderer = new Renderer(canvas);
+        setDisplayFPS(canvas::setInfo);
     }
 
     public void setDisplayFPS(Consumer<String> displayFPS) {
@@ -54,7 +55,7 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
             }
             frames++;
             if(time > 1e9){
-                displayFPS.accept(frames + " fps, " + updates + " ups");
+                displayFPS.accept(frames + " fps, " + updates + " ups, " + currentShadingFunction);
                 time = 0;
                 frames = 0;
                 updates = 0;
@@ -183,6 +184,7 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
 
     }
 
+    private String currentShadingFunction = "Phong";
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         if(keyEvent.getKeyCode() == KeyEvent.VK_W){
@@ -211,21 +213,27 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_1){
             renderer.setRenderFunction(renderer::renderTriangleWireframe);
+            currentShadingFunction = "Wireframe";
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_2){
             renderer.setRenderFunction(renderer::renderTriangleSuperFlat);
+            currentShadingFunction = "SuperFlat";
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_3){
             renderer.setRenderFunction(renderer::renderTriangleFlat);
+            currentShadingFunction = "Flat";
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_4){
             renderer.setRenderFunction(renderer::renderTriangleGouraud);
+            currentShadingFunction = "Gouraud";
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_5){
             renderer.setRenderFunction(renderer::renderTrianglePhong);
+            currentShadingFunction = "Phong";
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_6){
             renderer.setRenderFunction(renderer::renderTrianglePhongSpecularPhong);
+            currentShadingFunction = "Phong + specular";
         }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_C){
             scene.changeCamera();
