@@ -66,6 +66,7 @@ public class Material {
 
     public void setDiffuseTexture(Texture diffuseTexture) {
         this.diffuseTexture = diffuseTexture;
+        hasDiffuseTexture = diffuseTexture != null;
     }
 
     public Texture getSpecularTexture() {
@@ -74,6 +75,8 @@ public class Material {
 
     public void setSpecularTexture(Texture specularTexture) {
         this.specularTexture = specularTexture;
+        hasSpecularTexture = specularTexture != null;
+
     }
 
     public Texture getAmbientTexture() {
@@ -82,6 +85,7 @@ public class Material {
 
     public void setAmbientTexture(Texture ambientTexture) {
         this.ambientTexture = ambientTexture;
+        hasAmbientTexture = ambientTexture != null;
     }
 
     public Texture getNormalsTexture() {
@@ -90,6 +94,7 @@ public class Material {
 
     public void setNormalsTexture(Texture normalsTexture) {
         this.normalsTexture = normalsTexture;
+        hasNormalsTexture = normalsTexture != null;
     }
 
     public float getShininess() {
@@ -101,18 +106,18 @@ public class Material {
     }
 
     public boolean hasDiffuseTexture() {
-        return diffuseTexture != null;
+        return hasDiffuseTexture;
     }
 
     public boolean hasSpecularTexture() {
-        return specularTexture != null;
+        return hasSpecularTexture;
     }
 
     public boolean hasAmbientTexture() {
-        return ambientTexture != null;
+        return hasAmbientTexture;
     }
 
     public boolean hasNormalsTexture() {
-        return normalsTexture != null;
+        return hasNormalsTexture;
     }
 }

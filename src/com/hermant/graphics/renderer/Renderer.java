@@ -93,6 +93,191 @@ public class Renderer {
         }
     }
 
+    public void renderTrianglePhongSpecularPhong(Triangle t, Material m, LightSetup l){
+        Vector2i v0 = t.c.screen, v1 = t.b.screen, v2 = t.a.screen;
+        if(m.getDiffuseTexture() == null
+                || t.a.transformedPosition.z > 1 || t.a.transformedPosition.z < -1
+                || t.b.transformedPosition.z > 1 || t.b.transformedPosition.z < -1
+                || t.c.transformedPosition.z > 1 || t.c.transformedPosition.z < -1) return;
+        int minX = min(v0.x, v1.x, v2.x);
+        int minY = min(v0.y, v1.y, v2.y);
+        int maxX = max(v0.x, v1.x, v2.x);
+        int maxY = max(v0.y, v1.y, v2.y);
+
+        if(maxY < 0) return;
+        if(maxX < 0) return;
+        if(minX > canvas.getWidth()) return;
+        if(minY > canvas.getHeight()) return;
+
+        int area = orientation(v0, v1, v2);
+        if(area < 1) return;
+
+        // Clip against screen bounds
+        minX = Math.max(minX, 0);
+        minY = Math.max(minY, 0);
+        maxX = Math.min(maxX, canvas.getWidth() - 1);
+        maxY = Math.min(maxY, canvas.getHeight() - 1);
+
+
+        Vector2f texA = new Vector2f(t.a.texture.x * t.a.transformedPosition.w, t.a.texture.y * t.a.transformedPosition.w);
+        Vector2f texB = new Vector2f(t.b.texture.x * t.b.transformedPosition.w, t.b.texture.y * t.b.transformedPosition.w);
+        Vector2f texC = new Vector2f(t.c.texture.x * t.c.transformedPosition.w, t.c.texture.y * t.c.transformedPosition.w);
+
+        Vector3f posA = new Vector3f(t.a.transformedPositionEyeSpace.x * t.a.transformedPosition.w, t.a.transformedPositionEyeSpace.y * t.a.transformedPosition.w, t.a.transformedPositionEyeSpace.z * t.a.transformedPosition.w);
+        Vector3f posB = new Vector3f(t.b.transformedPositionEyeSpace.x * t.b.transformedPosition.w, t.b.transformedPositionEyeSpace.y * t.b.transformedPosition.w, t.b.transformedPositionEyeSpace.z * t.b.transformedPosition.w);
+        Vector3f posC = new Vector3f(t.c.transformedPositionEyeSpace.x * t.c.transformedPosition.w, t.c.transformedPositionEyeSpace.y * t.c.transformedPosition.w, t.c.transformedPositionEyeSpace.z * t.c.transformedPosition.w);
+
+        Vector3f normA = new Vector3f(t.a.transformedNormal.x * t.a.transformedPosition.w, t.a.transformedNormal.y * t.a.transformedPosition.w, t.a.transformedNormal.z * t.a.transformedPosition.w);
+        Vector3f normB = new Vector3f(t.b.transformedNormal.x * t.b.transformedPosition.w, t.b.transformedNormal.y * t.b.transformedPosition.w, t.b.transformedNormal.z * t.b.transformedPosition.w);
+        Vector3f normC = new Vector3f(t.c.transformedNormal.x * t.c.transformedPosition.w, t.c.transformedNormal.y * t.c.transformedPosition.w, t.c.transformedNormal.z * t.c.transformedPosition.w);
+
+        // Triangle setup
+        int A01 = v0.y - v1.y, B01 = v1.x - v0.x;
+        int A12 = v1.y - v2.y, B12 = v2.x - v1.x;
+        int A20 = v2.y - v0.y, B20 = v0.x - v2.x;
+
+        // Rasterize
+        Vector2i p = new Vector2i(minX, minY);
+
+        int w0_row = orientation(v1, v2, p);
+        int w1_row = orientation(v2, v0, p);
+        int w2_row = orientation(v0, v1, p);
+
+        for (p.y = minY; p.y <= maxY; p.y++) {
+            // Determine barycentric coordinates
+            int w0 = w0_row;
+            int w1 = w1_row;
+            int w2 = w2_row;
+            for (p.x = minX; p.x <= maxX; p.x++) {
+
+                // If p is on or inside all edges, render pixel.
+                if ((w0 | w1 | w2) >= 0){
+                    float f0 = (float)w0 / area;
+                    float f1 = (float)w1 / area;
+                    float f2 = 1.0f - f0 - f1;
+
+                    float z = 1 / (f0 * t.c.transformedPosition.w + f1 * t.b.transformedPosition.w + f2 * t.a.transformedPosition.w);
+
+                    Vector2f tex = new Vector2f(z * (texC.x * f0 + texB.x * f1 + texA.x * f2),
+                            z * (texC.y * f0 + texB.y * f1 + texA.y * f2));
+
+                    if(tex.x < 0) tex.x -= (int) tex.x - 1;
+                    if(tex.y < 0) tex.y -= (int) tex.y - 1;
+                    if(tex.x > 1) tex.x -= (int) tex.x;
+                    if(tex.y > 1) tex.y -= (int) tex.y;
+
+                    float depth = (f0 * t.c.transformedPosition.z + f1 * t.b.transformedPosition.z + f2 * t.a.transformedPosition.z);
+
+                    if(depth > 1 || depth < -1)continue;
+                    if(m.getDiffuseTexture().getAlpha(tex.x, tex.y) < 0.75f) continue;
+
+                    Vector3f pos = new Vector3f(z * (posC.x * f0 + posB.x * f1 + posA.x * f2),
+                            z * (posC.y * f0 + posB.y * f1 + posA.y * f2),
+                            z * (posC.z * f0 + posB.z * f1 + posA.z * f2));
+                    Vector3f norm = new Vector3f(z * (normC.x * f0 + normB.x * f1 + normA.x * f2),
+                            z * (normC.y * f0 + normB.y * f1 + normA.y * f2),
+                            z * (normC.z * f0 + normB.z * f1 + normA.z * f2)).normalize();
+
+                    Color3f light = new Color3f(l.getAmbientLight().getColor());
+                    Color3f specularColor;
+                    if(m.hasSpecularTexture()){
+                        specularColor = m.getSpecularTexture().getSampleNearestNeighbor(tex.x, tex.y);
+                    } else specularColor = m.getSpecularColour();
+                    boolean noSpecular = specularColor.red == 0 && specularColor.green == 0 && specularColor.blue == 0;
+                    Color3f specular = new Color3f();
+
+                    for (PointLight pointLight : l.getPointLights()) {
+                        Vector3f s = new Vector3f(pointLight.getPositionEyeSpace().x - pos.x, pointLight.getPositionEyeSpace().y - pos.y, pointLight.getPositionEyeSpace().z - pos.z).normalize();
+                        float sDotN = s.dot(norm);
+                        if(sDotN < 0)sDotN = 0;
+                        light.red += pointLight.getColor().red * sDotN;
+                        light.green += pointLight.getColor().green * sDotN;
+                        light.blue += pointLight.getColor().blue * sDotN;
+                        if(noSpecular) continue;
+                        Color3f spec = new Color3f(specularColor);
+                        spec.mul(pointLight.getColor());
+                        Vector3f toCamera = new Vector3f(pos).mul(-1).normalize();
+                        Vector3f toLight = new Vector3f(pos).
+                                    sub(
+                                        pointLight.getPositionEyeSpace().x,
+                                        pointLight.getPositionEyeSpace().y,
+                                        pointLight.getPositionEyeSpace().z).normalize();
+                        Vector3f reflected = toLight.reflect(norm);
+                        float cos = reflected.dot(toCamera);
+                        if(cos < 0) continue;
+                        cos = (float)Math.pow(cos, m.getShininess());
+                        specular.red += spec.red * cos;
+                        specular.green += spec.green * cos;
+                        specular.blue += spec.blue * cos;
+                    }
+
+                    for (SpotLight spotLight : l.getSpotLights()) {
+                        Vector3f s = new Vector3f(spotLight.getPositionEyeSpace().x - pos.x, spotLight.getPositionEyeSpace().y - pos.y, spotLight.getPositionEyeSpace().z - pos.z).normalize();
+                        float sDotN = s.dot(norm);
+                        if(sDotN < 0)sDotN = 0;
+                        float theta = s.dot(spotLight.getDirectionEyeSpace().x, spotLight.getDirectionEyeSpace().y, spotLight.getDirectionEyeSpace().z);
+                        theta = clamp((theta - spotLight.getOuterCutOff()) / spotLight.getEpsilon()) * sDotN;
+                        if(theta == 0)continue;
+                        light.red += spotLight.getColor().red * theta;
+                        light.green += spotLight.getColor().green * theta;
+                        light.blue += spotLight.getColor().blue * theta;
+                        if(noSpecular) continue;
+                        Color3f spec = new Color3f(specularColor);
+                        spec.mul(spotLight.getColor());
+                        Vector3f toCamera = new Vector3f(pos).mul(-1).normalize();
+                        Vector3f toLight = new Vector3f(pos).
+                                sub(
+                                        spotLight.getPositionEyeSpace().x,
+                                        spotLight.getPositionEyeSpace().y,
+                                        spotLight.getPositionEyeSpace().z).normalize();
+                        Vector3f reflected = toLight.reflect(norm);
+                        float cos = reflected.dot(toCamera);
+                        if(cos < 0) continue;
+                        cos = (float)Math.pow(cos, m.getShininess()) * theta;
+                        specular.red += spec.red * cos;
+                        specular.green += spec.green * cos;
+                        specular.blue += spec.blue * cos;
+                    }
+
+                    Vector3f s = new Vector3f(l.getDirectionalLight().getDirectionEyeSpace().x, l.getDirectionalLight().getDirectionEyeSpace().y, l.getDirectionalLight().getDirectionEyeSpace().z).normalize();
+                    float sDotN = s.dot(norm);
+                    if(sDotN < 0)sDotN = 0;
+                    light.red += l.getDirectionalLight().getColor().red * sDotN;
+                    light.green += l.getDirectionalLight().getColor().green * sDotN;
+                    light.blue += l.getDirectionalLight().getColor().blue * sDotN;
+                    if (!noSpecular) {
+                        Color3f spec = new Color3f(specularColor);
+                        spec.mul(l.getDirectionalLight().getColor());
+                        Vector3f toCamera = new Vector3f(pos).mul(-1).normalize();
+                        Vector3f toLight = new Vector3f(
+                                l.getDirectionalLight().getDirectionEyeSpace().x,
+                                l.getDirectionalLight().getDirectionEyeSpace().y,
+                                l.getDirectionalLight().getDirectionEyeSpace().z).mul(-1).normalize();
+                        Vector3f reflected = toLight.reflect(norm);
+                        float cos = reflected.dot(toCamera);
+                        if (!(cos < 0)) {
+                            cos = (float)Math.pow(cos, m.getShininess());
+                            specular.red += spec.red * cos;
+                            specular.green += spec.green * cos;
+                            specular.blue += spec.blue * cos;
+                        }
+                    }
+
+                    canvas.setPixel(p.x, p.y, Color3f.mul(m.getDiffuseTexture().getSampleNearestNeighbor(tex.x, tex.y), light).add(specular).clamp(), depth);
+                }
+
+                // One step to the right
+                w0 += A12;
+                w1 += A20;
+                w2 += A01;
+            }
+            // One row step
+            w0_row += B12;
+            w1_row += B20;
+            w2_row += B01;
+        }
+    }
+
     public void renderTrianglePhong(Triangle t, Material m, LightSetup l){
         Vector2i v0 = t.c.screen, v1 = t.b.screen, v2 = t.a.screen;
         if(m.getDiffuseTexture() == null

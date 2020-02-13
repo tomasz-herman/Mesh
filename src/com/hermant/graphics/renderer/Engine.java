@@ -224,6 +224,9 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
         else if(keyEvent.getKeyCode() == KeyEvent.VK_5){
             renderer.setRenderFunction(renderer::renderTrianglePhong);
         }
+        else if(keyEvent.getKeyCode() == KeyEvent.VK_6){
+            renderer.setRenderFunction(renderer::renderTrianglePhongSpecularPhong);
+        }
         else if(keyEvent.getKeyCode() == KeyEvent.VK_C){
             scene.changeCamera();
         }

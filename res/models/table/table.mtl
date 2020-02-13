@@ -13,3 +13,4 @@ illum 2
 map_Kd textures/table.png
 map_Kn textures/table_norm.jpg
 map_Ka textures/table.png
+map_Ks textures/table_spec.jpg
