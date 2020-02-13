@@ -811,7 +811,7 @@ public class Renderer {
             int w0 = w0_row;
             int w1 = w1_row;
             int w2 = w2_row;
-            for (p.x = minX; p.x <= maxX; p.x++) {
+            for (p.x = minX; p.x <= maxX; p.x++, w0 += A12, w1 += A20, w2 += A01) {
 
                 // If p is on or inside all edges, render pixel.
                 if ((w0 | w1 | w2) >= 0){
@@ -832,9 +832,6 @@ public class Renderer {
                 }
 
                 // One step to the right
-                w0 += A12;
-                w1 += A20;
-                w2 += A01;
             }
             // One row step
             w0_row += B12;
