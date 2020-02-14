@@ -52,7 +52,7 @@ public class Main {
                 ));
         scene.addCamera(new FirstPersonCamera(new Vector3f(0, 80, 0), new Vector3f(0, 0f, 0)));
         scene.addCamera(new FirstPersonCamera(new Vector3f(0, 20, 0), new Vector3f(0, 0f, 0)));
-        scene.addCamera(new FollowingCamera(new Vector3f(40, 60, 0), scene.getGameObjects().get(2)));
+        scene.addCamera(new FollowingCamera(new Vector3f(40, 70, 0), scene.getGameObjects().get(2)));
         scene.addCamera(new ThirdPersonCamera(scene.getGameObjects().get(2), 25));
         window.setScene(scene);
         window.start();

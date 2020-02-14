@@ -19,7 +19,7 @@ import static com.hermant.utils.MathUtils.*;
 public class Renderer {
 
     private float fov = (float) Math.toRadians(60.0f);
-    private static final float Z_NEAR = 1f;
+    private static final float Z_NEAR = 10f;
     private static final float Z_FAR = 1000.f;
 
     private final static int THREADS = Runtime.getRuntime().availableProcessors();
