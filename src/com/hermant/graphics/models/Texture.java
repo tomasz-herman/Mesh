@@ -7,6 +7,7 @@ import org.lwjgl.system.MemoryStack;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.stream.IntStream;
 
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 
@@ -44,12 +45,10 @@ public class Texture {
     }
 
     public Texture(int width, int height, Color3f color){
-        int rgb = color.getRGB();
         this.width = width;
         this.height = height;
         pixels = new Color3f[width * height];
-        for (int i = 0; i < width * height; i++)
-            pixels[i] = new Color3f(0);
+        IntStream.range(0, width * height).forEach(i -> pixels[i] = new Color3f(color));
     }
 
     public Color3f getSampleNearestNeighbor(float x, float y){
@@ -110,7 +109,6 @@ public class Texture {
 //        }
 //        return result;
 //    }
-
 
     public int getMedium() {
         return medium;

@@ -11,6 +11,9 @@ import java.awt.image.DataBufferInt;
 import java.util.Arrays;
 
 public class Canvas extends JPanel implements ComponentListener {
+    private static final int CLEAR_COLOR = 0x00000000;
+    private static final float CLEAR_DEPTH = 1.0f;
+
     private int width;
     private int height;
     private BufferedImage image;
@@ -28,7 +31,7 @@ public class Canvas extends JPanel implements ComponentListener {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
         depth = new float[pixels.length];
-        Arrays.fill(depth, 1f);
+        Arrays.fill(depth, CLEAR_DEPTH);
     }
 
     @Override
@@ -91,8 +94,8 @@ public class Canvas extends JPanel implements ComponentListener {
     }
 
     public void clear(){
-        Arrays.fill(pixels, 0);
-        Arrays.fill(depth, 1.0f);
+        Arrays.fill(pixels, CLEAR_COLOR);
+        Arrays.fill(depth, CLEAR_DEPTH);
     }
 
     @Override
@@ -103,17 +106,11 @@ public class Canvas extends JPanel implements ComponentListener {
     }
 
     @Override
-    public void componentMoved(ComponentEvent e) {
-
-    }
+    public void componentMoved(ComponentEvent e) { }
 
     @Override
-    public void componentShown(ComponentEvent e) {
-
-    }
+    public void componentShown(ComponentEvent e) { }
 
     @Override
-    public void componentHidden(ComponentEvent e) {
-
-    }
+    public void componentHidden(ComponentEvent e) { }
 }

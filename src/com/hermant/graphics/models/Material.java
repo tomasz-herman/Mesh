@@ -22,9 +22,9 @@ public class Material {
     private float shininess;
 
     public Material() {
-        this.ambientColour = DEFAULT_COLOUR;
-        this.diffuseColour = DEFAULT_COLOUR;
-        this.specularColour = DEFAULT_COLOUR;
+        this.ambientColour = new Color3f(DEFAULT_COLOUR);
+        this.diffuseColour = new Color3f(DEFAULT_COLOUR);
+        this.specularColour = new Color3f(DEFAULT_COLOUR);
         diffuseTexture = null;
         specularTexture = null;
         ambientTexture = null;

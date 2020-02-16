@@ -146,14 +146,10 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
     }
 
     @Override
-    public void mouseMoved(MouseEvent mouseEvent) {
-
-    }
+    public void mouseMoved(MouseEvent mouseEvent) { }
 
     @Override
-    public void keyTyped(KeyEvent keyEvent) {
-
-    }
+    public void keyTyped(KeyEvent keyEvent) { }
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
@@ -253,19 +249,13 @@ public class Engine implements MouseListener, MouseMotionListener, KeyListener, 
     }
 
     @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-
-    }
+    public void mouseReleased(MouseEvent mouseEvent) { }
 
     @Override
-    public void mouseEntered(MouseEvent mouseEvent) {
-
-    }
+    public void mouseEntered(MouseEvent mouseEvent) { }
 
     @Override
-    public void mouseExited(MouseEvent mouseEvent) {
-
-    }
+    public void mouseExited(MouseEvent mouseEvent) { }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
