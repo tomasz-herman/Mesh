@@ -53,14 +53,8 @@ public class Renderer {
                 object.getModel().getMeshes().parallelStream().forEach(mesh -> {
                     AABBf box = mesh.getAABB();
                     if(!intersection.testAab(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)) return;
-                    if(mesh.getVertices().size() > THREADS << 2)
-                        mesh.getVertices().parallelStream().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
-                    else
-                        mesh.getVertices().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
-                    if(mesh.getTriangles().size() > THREADS << 2)
-                        mesh.getTriangles().parallelStream().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLightSetup()));
-                    else
-                        mesh.getTriangles().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLightSetup()));
+                    mesh.getVertices().forEach(vertex -> vertex.transform(MVP, modelViewMatrix, normalMatrix, canvas.getWidth(), canvas.getHeight()));
+                    mesh.getTriangles().forEach(triangle -> renderFunction.render(triangle, mesh.getMaterial(), scene.getLightSetup()));
                 });
             } else {
                 object.getModel().getMeshes().forEach(mesh -> {
