@@ -37,10 +37,10 @@ public class Main {
         window.pack();
         LightSetup lights = new LightSetup();
         PointLight pointLight = new PointLight(0, 100, 0);
-        pointLight.setColor(new Color3f(155, 0, 0));
+        pointLight.setColor(new Color3f(155, 155, 155));
         lights.getPointLights().add(pointLight);
         SpotLight spotLight = new SpotLight(0, 100, 0, 0, 1, 0, 0.98f, 0.95f);
-        spotLight.setColor(new Color3f(0, 255, 255));
+        spotLight.setColor(new Color3f(150, 150, 150));
         lights.getSpotLights().add(spotLight);
         Scene scene = new Scene();
         scene.setLightSetup(lights);
