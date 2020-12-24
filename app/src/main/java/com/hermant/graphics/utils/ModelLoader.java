@@ -6,11 +6,15 @@ import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hermant.utils.FileUtils.ioResourceToByteBuffer;
 import static org.lwjgl.assimp.Assimp.*;
+import static org.lwjgl.system.MemoryUtil.*;
 
 public class ModelLoader {
 
@@ -24,7 +28,43 @@ public class ModelLoader {
         long startTime = System.nanoTime();
         vertNum = triNum = 0;
         System.out.println("[ModelLoader] Loading: " + resourcePath);
-        AIScene aiScene = aiImportFile(resourcePath, flags);
+        AIFileIO fileIo = AIFileIO.create()
+                .OpenProc((pFileIO, fileName, openMode) -> {
+                    ByteBuffer data;
+                    String fileNameUtf8 = memUTF8(fileName);
+                    try {
+                        data = ioResourceToByteBuffer(fileNameUtf8, 8192);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Could not open file: " + fileNameUtf8);
+                    }
+
+                    return AIFile.create()
+                            .ReadProc((pFile, pBuffer, size, count) -> {
+                                long max = Math.min(data.remaining(), size * count);
+                                memCopy(memAddress(data) + data.position(), pBuffer, max);
+                                return max;
+                            })
+                            .SeekProc((pFile, offset, origin) -> {
+                                if (origin == Assimp.aiOrigin_CUR) {
+                                    data.position(data.position() + (int) offset);
+                                } else if (origin == Assimp.aiOrigin_SET) {
+                                    data.position((int) offset);
+                                } else if (origin == Assimp.aiOrigin_END) {
+                                    data.position(data.limit() + (int) offset);
+                                }
+                                return 0;
+                            })
+                            .FileSizeProc(pFile -> data.limit())
+                            .address();
+                })
+                .CloseProc((pFileIO, pFile) -> {
+                    AIFile aiFile = AIFile.create(pFile);
+
+                    aiFile.ReadProc().free();
+                    aiFile.SeekProc().free();
+                    aiFile.FileSizeProc().free();
+                });
+        AIScene aiScene = aiImportFileEx(resourcePath, flags, fileIo);
         if (aiScene == null) {
             throw new Exception("[ModelLoader] Error loading model " + resourcePath);
         }

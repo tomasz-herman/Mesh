@@ -26,9 +26,9 @@ public class Main {
         Model sponza = null;
         Model table = null;
         try {
-            rock = ModelLoader.load("res/models/rock/rock.obj", "res/models/rock");
-            sponza = ModelLoader.load("res/models/sponza/sponza.obj", "res/models/sponza");
-            table = ModelLoader.load("res/models/table/table.obj", "res/models/table");
+            rock = ModelLoader.load("/models/rock/rock.obj", "/models/rock");
+            sponza = ModelLoader.load("/models/sponza/sponza.obj", "/models/sponza");
+            table = ModelLoader.load("/models/table/table.obj", "/models/table");
         } catch (Exception e) {
             e.printStackTrace();
         }

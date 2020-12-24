@@ -1,0 +1,31 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    jcenter()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+project.ext.lwjglVersion = "3.0.0a"
+
+dependencies {
+    testImplementation 'junit:junit:4.13'
+    implementation 'org.l33tlabs.twl:pngdecoder:1.0'
+    implementation "org.joml:joml:1.9.25"
+    implementation "org.lwjgl:lwjgl:3.2.3"
+    implementation "org.lwjgl:lwjgl-assimp:3.2.3"
+    implementation "org.lwjgl:lwjgl-stb:3.2.3"
+	runtimeOnly "org.lwjgl:lwjgl-platform:3.0.0:natives-windows"
+	runtimeOnly "org.lwjgl:lwjgl-platform:3.0.0:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl:3.0.0:natives-windows"
+	runtimeOnly "org.lwjgl:lwjgl:3.0.0:natives-linux"
+	runtimeOnly "org.lwjgl:lwjgl-assimp:3.2.3:natives-windows"
+	runtimeOnly "org.lwjgl:lwjgl-assimp:3.2.3:natives-linux"
+	runtimeOnly "org.lwjgl:lwjgl-stb:3.2.3:natives-windows"
+	runtimeOnly "org.lwjgl:lwjgl-stb:3.2.3:natives-linux"
+}
+
+application {
+    mainClass = 'com.hermant.Main'
+}
